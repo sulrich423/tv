@@ -90,19 +90,23 @@ public class TvComponent {
       ArrayList<MovieViewModel> result = Lists.newArrayList();
       Optional<MovieViewModel> duplicateValue = list.stream()
           .filter(movieViewModel::equals)
-          .findFirst()
-          .map(a -> a.but()
-              .withAiringDatas(
-                  ListUtils.union(a.getAiringDatas(), movieViewModel.getAiringDatas()).stream()
-                      .sorted(Comparator.comparing(AiringData::getLocalDateTime))
-                      .collect(Collectors.toList()))
-              .build());
+          .findFirst();
 
       if (duplicateValue.isPresent()) {
+        MovieViewModel combinedValue = Lists.<MovieViewModel> newArrayList(duplicateValue.get(), movieViewModel).stream()
+            .sorted(Comparator.comparing(a -> a.getAiringDatas().get(0).getStart()))
+            .findFirst().get()
+            .but()
+            .withAiringDatas(
+                ListUtils.union(duplicateValue.get().getAiringDatas(), movieViewModel.getAiringDatas()).stream()
+                    .sorted(Comparator.comparing(AiringData::getStart))
+                    .collect(Collectors.toList()))
+            .build();
+
         result.addAll(list.stream()
             .filter(t -> !movieViewModel.equals(t))
             .collect(Collectors.toList()));
-        result.add(duplicateValue.get());
+        result.add(combinedValue);
       } else {
         result.addAll(list);
         result.add(movieViewModel);
