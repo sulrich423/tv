@@ -39,20 +39,22 @@ public class MovieConverter {
         .withImdbRating(entity.getImdbRating())
         .withImdbUrl(
             Optional.ofNullable(entity.getImdbId()).map(id -> String.format("https://www.imdb.com/title/%s/", id)).orElse(null))
+        .withTvSpielfilmDetailUrl(entity.getTvSpielfilmDetailUrl())
         .withMetacriticRating(entity.getMetacriticRating())
         .withMetacriticClass(getMetaCriticClass(entity.getMetacriticRating()).toString())
         .withRanking(
             getRanking(entity.getTvSpielfilmRating(), entity.isTipp(), entity.getImdbRating(), entity.getMetacriticRating()))
-        .withSeen(entity.isSeen())
         .withStars(entity.getStars())
         .withTitle(entity.getTitle())
         .withTvSpielfilmRating(entity.getTvSpielfilmRating())
         .withYear(entity.getYear())
         .withOriginalTitle(entity.getOriginalTitle())
-        .withDirector(Person.builder().withName(entity.getDirector()).build())
+        .withDirector(entity.getDirector())
         .withImages(entity.getImages())
         .withDescription(entity.getDescription())
         .withTipp(entity.isTipp())
+        .withIsNew(entity.isNew())
+        .withAwards(StringUtils.removeEnd(entity.getAwards(), "."))
         .build();
   }
 

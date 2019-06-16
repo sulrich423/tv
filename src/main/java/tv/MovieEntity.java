@@ -28,19 +28,19 @@ public class MovieEntity {
   private String date;
   private String genre;
   private String imdbId;
-  private boolean seen;
   private String stars;
   private String callDate;
   private String tvSpielfilmDetailUrl;
   private String originalTitle;
   private String director;
   private boolean tipp;
-  private String imdbDirector;
   @ElementCollection
   @OrderColumn(name = "image_id")
   private List<String> images;
   @Column(columnDefinition = "TEXT")
   private String description;
+  private boolean isNew;
+  private String awards;
   private boolean recorded;
 
   private MovieEntity(Builder builder) {
@@ -56,16 +56,16 @@ public class MovieEntity {
     this.date = builder.date;
     this.genre = builder.genre;
     this.imdbId = builder.imdbId;
-    this.seen = builder.seen;
     this.stars = builder.stars;
     this.callDate = builder.callDate;
     this.tvSpielfilmDetailUrl = builder.tvSpielfilmDetailUrl;
     this.originalTitle = builder.originalTitle;
     this.director = builder.director;
     this.tipp = builder.tipp;
-    this.imdbDirector = builder.imdbDirector;
     this.images = builder.images;
     this.description = builder.description;
+    this.isNew = builder.isNew;
+    this.awards = builder.awards;
     this.recorded = builder.recorded;
   }
 
@@ -85,17 +85,18 @@ public class MovieEntity {
         .withImdbRating(imdbRating)
         .withImdbId(imdbId)
         .withMetacriticRating(metacriticRating)
-        .withSeen(seen)
         .withStars(stars)
         .withTime(time)
         .withTitle(title)
+        .withTvSpielfilmDetailUrl(tvSpielfilmDetailUrl)
         .withTvSpielfilmRating(tvSpielfilmRating)
         .withYear(year)
         .withOriginalTitle(originalTitle)
         .withDirector(director)
-        .withImdbDirector(imdbDirector)
         .withImages(images)
         .withDescription(description)
+        .withIsNew(isNew)
+        .withAwards(awards)
         .withRecorded(recorded);
   }
 
@@ -113,6 +114,10 @@ public class MovieEntity {
 
   public String getCountry() {
     return country;
+  }
+
+  public boolean isNew() {
+    return isNew;
   }
 
   public String getYear() {
@@ -147,16 +152,16 @@ public class MovieEntity {
     return date;
   }
 
+  public String getAwards() {
+    return awards;
+  }
+
   public String getGenre() {
     return genre;
   }
 
   public String getImdbId() {
     return imdbId;
-  }
-
-  public boolean isSeen() {
-    return seen;
   }
 
   public String getStars() {
@@ -177,10 +182,6 @@ public class MovieEntity {
 
   public String getDirector() {
     return director;
-  }
-
-  public String getImdbDirector() {
-    return imdbDirector;
   }
 
   public List<String> getImages() {
@@ -208,16 +209,16 @@ public class MovieEntity {
     private String date;
     private String genre;
     private String imdbId;
-    private boolean seen;
     private String stars;
     private String callDate;
     private String tvSpielfilmDetailUrl;
     private String originalTitle;
     private String director;
     private boolean tipp;
-    private String imdbDirector;
     private List<String> images = Collections.emptyList();
     private String description;
+    private boolean isNew;
+    private String awards;
     private boolean recorded;
 
     private Builder() {
@@ -283,11 +284,6 @@ public class MovieEntity {
       return this;
     }
 
-    public Builder withSeen(boolean seen) {
-      this.seen = seen;
-      return this;
-    }
-
     public Builder withStars(String stars) {
       this.stars = stars;
       return this;
@@ -318,11 +314,6 @@ public class MovieEntity {
       return this;
     }
 
-    public Builder withImdbDirector(String imdbDirector) {
-      this.imdbDirector = imdbDirector;
-      return this;
-    }
-
     public Builder withImages(List<String> images) {
       this.images = images;
       return this;
@@ -330,6 +321,16 @@ public class MovieEntity {
 
     public Builder withDescription(String description) {
       this.description = description;
+      return this;
+    }
+
+    public Builder withIsNew(boolean isNew) {
+      this.isNew = isNew;
+      return this;
+    }
+
+    public Builder withAwards(String awards) {
+      this.awards = awards;
       return this;
     }
 
@@ -354,7 +355,8 @@ public class MovieEntity {
       return withDirector(tvSpielfilmDetailData.getDirector())
           .withOriginalTitle(tvSpielfilmDetailData.getOriginalTitle())
           .withImages(tvSpielfilmDetailData.getImages())
-          .withTipp(tvSpielfilmDetailData.isTipp());
+          .withTipp(tvSpielfilmDetailData.isTipp())
+          .withIsNew(tvSpielfilmDetailData.isNew());
     }
 
     public Builder withImdbSuggestData(ImdbSuggestData imdbSuggestData) {
@@ -365,7 +367,7 @@ public class MovieEntity {
     public Builder withImdbDetailData(ImdbDetailData imdbDetailData) {
       return withImdbRating(imdbDetailData.getImdbRating())
           .withMetacriticRating(imdbDetailData.getMetacriticRating())
-          .withImdbDirector(imdbDetailData.getImdbDirector());
+          .withAwards(imdbDetailData.getAwards());
     }
 
     public MovieEntity build() {

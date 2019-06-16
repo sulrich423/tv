@@ -10,6 +10,7 @@ public class TvSpielfilmDetailData {
   private final List<String> images;
   private final String description;
   private final boolean tipp;
+  private final boolean isNew;
 
   private TvSpielfilmDetailData(Builder builder) {
     this.originalTitle = builder.originalTitle;
@@ -17,6 +18,7 @@ public class TvSpielfilmDetailData {
     this.images = builder.images;
     this.description = builder.description;
     this.tipp = builder.tipp;
+    this.isNew = builder.isNew;
   }
 
   public String getOriginalTitle() {
@@ -39,6 +41,10 @@ public class TvSpielfilmDetailData {
     return description;
   }
 
+  public boolean isNew() {
+    return isNew;
+  }
+
   public static Builder builder() {
     return new Builder();
   }
@@ -49,6 +55,7 @@ public class TvSpielfilmDetailData {
     private List<String> images = Collections.emptyList();
     private String description;
     private boolean tipp;
+    private boolean isNew;
 
     private Builder() {
     }
@@ -75,6 +82,11 @@ public class TvSpielfilmDetailData {
 
     public Builder withTipp(boolean tipp) {
       this.tipp = tipp;
+      return this;
+    }
+
+    public Builder withIsNew(boolean isNew) {
+      this.isNew = isNew;
       return this;
     }
 

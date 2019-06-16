@@ -14,19 +14,19 @@ public class MovieViewModel {
   private final String imdbRating;
   private final String metacriticRating;
   private final String metacriticClass;
-  private final List<Person> actors;
-  private final Person director;
+  private final String director;
   private final List<String> images;
   private final String description;
-  private final List<String> awards;
   private final List<AiringData> airingDatas;
   private final String genre;
   private final String imdbUrl;
-  private final boolean seen;
+  private final String tvSpielfilmDetailUrl;
   private final int ranking;
   private final String stars;
   private final String callDate;
   private final boolean tipp;
+  private final boolean isNew;
+  private final String awards;
 
   private MovieViewModel(Builder builder) {
     this.id = builder.id;
@@ -38,19 +38,27 @@ public class MovieViewModel {
     this.imdbRating = builder.imdbRating;
     this.metacriticRating = builder.metacriticRating;
     this.metacriticClass = builder.metacriticClass;
-    this.actors = builder.actors;
     this.director = builder.director;
     this.images = builder.images;
     this.description = builder.description;
-    this.awards = builder.awards;
     this.airingDatas = builder.airingDatas;
     this.genre = builder.genre;
     this.imdbUrl = builder.imdbUrl;
-    this.seen = builder.seen;
+    this.tvSpielfilmDetailUrl = builder.tvSpielfilmDetailUrl;
     this.ranking = builder.ranking;
     this.stars = builder.stars;
     this.callDate = builder.callDate;
     this.tipp = builder.tipp;
+    this.isNew = builder.isNew;
+    this.awards = builder.awards;
+  }
+
+  public Integer getId() {
+    return id;
+  }
+
+  public String getTvSpielfilmDetailUrl() {
+    return tvSpielfilmDetailUrl;
   }
 
   public String getCallDate() {
@@ -61,20 +69,20 @@ public class MovieViewModel {
     return stars;
   }
 
-  public Integer getId() {
-    return id;
-  }
-
   public boolean isTipp() {
     return tipp;
   }
 
-  public String getMetacriticClass() {
-    return metacriticClass;
+  public boolean isNew() {
+    return isNew;
   }
 
-  public boolean isSeen() {
-    return seen;
+  public String getDirector() {
+    return director;
+  }
+
+  public String getMetacriticClass() {
+    return metacriticClass;
   }
 
   public int getRanking() {
@@ -113,14 +121,6 @@ public class MovieViewModel {
     return metacriticRating;
   }
 
-  public List<Person> getActors() {
-    return actors;
-  }
-
-  public Person getDirector() {
-    return director;
-  }
-
   public List<String> getImages() {
     return images;
   }
@@ -129,7 +129,7 @@ public class MovieViewModel {
     return description;
   }
 
-  public List<String> getAwards() {
+  public String getAwards() {
     return awards;
   }
 
@@ -143,7 +143,7 @@ public class MovieViewModel {
 
   public Builder but() {
     return builder()
-        .withActors(actors)
+        .withId(id)
         .withTipp(tipp)
         .withAiringDatas(airingDatas)
         .withAwards(awards)
@@ -152,19 +152,19 @@ public class MovieViewModel {
         .withDescription(description)
         .withDirector(director)
         .withGenre(genre)
-        .withId(id)
         .withImages(images)
         .withImdbRating(imdbRating)
         .withImdbUrl(imdbUrl)
+        .withTvSpielfilmDetailUrl(tvSpielfilmDetailUrl)
         .withMetacriticRating(metacriticRating)
         .withMetacriticClass(metacriticClass)
         .withOriginalTitle(originalTitle)
         .withRanking(ranking)
-        .withSeen(seen)
         .withStars(stars)
         .withTitle(title)
         .withTvSpielfilmRating(tvSpielfilmRating)
-        .withYear(year);
+        .withYear(year)
+        .withIsNew(isNew);
   }
 
   @Override
@@ -227,19 +227,19 @@ public class MovieViewModel {
     private String imdbRating;
     private String metacriticRating;
     private String metacriticClass;
-    private List<Person> actors = Collections.emptyList();
-    private Person director;
+    private String director;
     private List<String> images = Collections.emptyList();
     private String description;
-    private List<String> awards = Collections.emptyList();
     private List<AiringData> airingDatas = Collections.emptyList();
     private String genre;
     private String imdbUrl;
-    private boolean seen;
+    private String tvSpielfilmDetailUrl;
     private int ranking;
     private String stars;
     private String callDate;
     private boolean tipp;
+    private boolean isNew;
+    private String awards;
 
     private Builder() {
     }
@@ -289,12 +289,7 @@ public class MovieViewModel {
       return this;
     }
 
-    public Builder withActors(List<Person> actors) {
-      this.actors = actors;
-      return this;
-    }
-
-    public Builder withDirector(Person director) {
+    public Builder withDirector(String director) {
       this.director = director;
       return this;
     }
@@ -306,11 +301,6 @@ public class MovieViewModel {
 
     public Builder withDescription(String description) {
       this.description = description;
-      return this;
-    }
-
-    public Builder withAwards(List<String> awards) {
-      this.awards = awards;
       return this;
     }
 
@@ -329,8 +319,8 @@ public class MovieViewModel {
       return this;
     }
 
-    public Builder withSeen(boolean seen) {
-      this.seen = seen;
+    public Builder withTvSpielfilmDetailUrl(String tvSpielfilmDetailUrl) {
+      this.tvSpielfilmDetailUrl = tvSpielfilmDetailUrl;
       return this;
     }
 
@@ -351,6 +341,16 @@ public class MovieViewModel {
 
     public Builder withTipp(boolean tipp) {
       this.tipp = tipp;
+      return this;
+    }
+
+    public Builder withIsNew(boolean isNew) {
+      this.isNew = isNew;
+      return this;
+    }
+
+    public Builder withAwards(String awards) {
+      this.awards = awards;
       return this;
     }
 

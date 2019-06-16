@@ -230,12 +230,15 @@ public class TvComponent {
 
     boolean isTipp = !doc.select(".broadcast-detail__header .icon-tip").isEmpty();
 
+    boolean isNew = !doc.select(".broadcast-detail__header .icon-new").isEmpty();
+
     return movieEntity.but()
         .withOriginalTitle(originalTitle)
         .withDirector(director)
         .withImages(images)
         .withDescription(description)
         .withTipp(isTipp)
+        .withIsNew(isNew)
         .build();
   }
 
@@ -278,16 +281,12 @@ public class TvComponent {
       String imdbRating = doc.select(".ratingValue strong span").html();
       String metaCriticRating = doc.select(".metacriticScore span").html();
 
-      String director = doc.select(".credit_summary_item h4").stream()
-          .filter(element -> element.text().equals("Director:") || element.text().equals("Directors:"))
-          .findFirst()
-          .map(element -> element.nextElementSibling().text())
-          .orElse(null);
+      String awards = doc.select(".awards-blurb b").text();
 
       ImdbDetailData imdbDetailData = ImdbDetailData.builder()
           .withImdbRating(imdbRating)
           .withMetacriticRating(metaCriticRating)
-          .withImdbDirector(director)
+          .withAwards(awards)
           .build();
       return movieEntity.but()
           .withImdbDetailData(imdbDetailData)
