@@ -43,9 +43,11 @@
     </ul>
     <div class="list-group list-group-horizontal">
       <c:forEach var="category" items="${categories}" varStatus="status">
-        <a class="list-group-item list-group-item-light list-group-item-action <c:if test="${status.first}">active</c:if>" style="width: initial; line-height: 10px;" data-toggle="list" href="#category${status.index}" role="tab">
-        ${category.categoryName}
-        </a>
+        <c:if test="${not empty category.movies}">
+          <a class="list-group-item list-group-item-light list-group-item-action <c:if test="${status.first}">active</c:if>" style="width: initial; line-height: 10px;" data-toggle="list" href="#category${status.index}" role="tab">
+            ${category.categoryName}
+          </a>
+        </c:if>
       </c:forEach>
     </div>
     <button id="update" class="btn btn-secondary ml-auto" style="margin-right: 10px;">Update</button>
