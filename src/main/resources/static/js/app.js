@@ -22,7 +22,7 @@ function disconnect() {
 }
 
 function sendData() {
-    stompClient.send("/app/update", {}, JSON.stringify({'date': $('.pagination .active').data('date')}));
+    stompClient.send("/app/update", {}, JSON.stringify({'date': $('.page-item:nth-child(2)').data('date')}));
 }
 
 function showGreeting(message) {
@@ -40,6 +40,30 @@ function showGreeting(message) {
     location.reload();
   }
 }
+
+function calcHeight() {
+  var rows = $('.row:visible');
+  for(var i = 0; i < rows.length; i++) {
+    var boxes = $(rows[i]).find('.mybox');
+    var numberOfTilesPerLine = Math.min(Math.floor($(window).width() / boxes.width()),4);
+    for(var j = 0; j < boxes.length; j+=numberOfTilesPerLine) {
+      for(var k = 0; k < $(boxes[j]).children().length; k++) {
+        $(boxes.slice(j, j + numberOfTilesPerLine)
+            .map(function(i,e) {
+              return $(e).children()[k]
+            }
+          )).equalizeHeights();
+        $(boxes.slice(j, j + numberOfTilesPerLine)
+            .map(function(i,e) {
+              $(e).parent().parent().height($(boxes[j]).outerHeight());
+              $(e).css('visibility','visible');
+            }
+          ));
+      }
+    }
+  }
+}
+
 
 $(function () {
     $( "#update" ).click(function() {
@@ -59,4 +83,23 @@ $(function () {
       el.toggleClass('record recorded');
       el.removeClass('editable');
     });
+
+    $.fn.equalizeHeights = function() {
+      var maxHeight = this.map(function( i, e ) {
+        return Math.round($( e ).height());
+      }).get();
+      return this.height( Math.max.apply( this, maxHeight ) );
+    };
+
+    $(document).ready(calcHeight);
+
+    $('a[data-toggle="list"]').on('shown.bs.tab', function (e) {
+      calcHeight();
+    })
+
+    $('.do-rotate').click(function() {
+      $(this).parent().parent().parent().toggleClass('rotate');
+    });
+
+
 });
