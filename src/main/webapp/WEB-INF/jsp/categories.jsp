@@ -13,7 +13,6 @@
 <script src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js" ></script>
 <script src="/webjars/sockjs-client/sockjs.min.js"></script>
 <script src="/webjars/stomp-websocket/stomp.min.js"></script>
-<script src="/webjars/vue/2.5.16/vue.js"></script>
 <script src="/js/app.js"></script>
 </head>
 <body>
@@ -58,32 +57,6 @@
       </c:if>
     </c:forEach>
   </div>
-
-
-<%--
-<div id="app">
-{{ message }}
-
-
-</div>
-
-<script type="text/javascript">
-var app = new Vue({
-  el: '#app',
-  data: {
-    message: 'Hello Vue.js!'
-  },
-  methods: {
-    reverseMessage: function () {
-      this.message = this.message.split('').reverse().join('')
-    }
-  }
-})
-</script>
- --%>
-
-
-
 
 
 </body>
