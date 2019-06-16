@@ -41,6 +41,7 @@ public class MovieEntity {
   private List<String> images;
   @Column(columnDefinition = "TEXT")
   private String description;
+  private boolean recorded;
 
   private MovieEntity(Builder builder) {
     this.id = builder.id;
@@ -65,6 +66,7 @@ public class MovieEntity {
     this.imdbDirector = builder.imdbDirector;
     this.images = builder.images;
     this.description = builder.description;
+    this.recorded = builder.recorded;
   }
 
   public MovieEntity() {
@@ -93,7 +95,8 @@ public class MovieEntity {
         .withDirector(director)
         .withImdbDirector(imdbDirector)
         .withImages(images)
-        .withDescription(description);
+        .withDescription(description)
+        .withRecorded(recorded);
   }
 
   public Integer getId() {
@@ -114,6 +117,10 @@ public class MovieEntity {
 
   public String getYear() {
     return year;
+  }
+
+  public boolean isRecorded() {
+    return recorded;
   }
 
   public String getTvSpielfilmRating() {
@@ -211,6 +218,7 @@ public class MovieEntity {
     private String imdbDirector;
     private List<String> images = Collections.emptyList();
     private String description;
+    private boolean recorded;
 
     private Builder() {
     }
@@ -322,6 +330,11 @@ public class MovieEntity {
 
     public Builder withDescription(String description) {
       this.description = description;
+      return this;
+    }
+
+    public Builder withRecorded(boolean recorded) {
+      this.recorded = recorded;
       return this;
     }
 

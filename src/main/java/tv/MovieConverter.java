@@ -3,9 +3,11 @@ package tv;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import com.google.common.base.Strings;
@@ -26,26 +28,14 @@ public class MovieConverter {
       .build();
 
   public MovieViewModel toViewModel(MovieEntity entity) {
-    String date = entity.getDate();
-    String time = entity.getTime();
-
-    LocalDateTime localDateTime = LocalDateTime.parse(LocalDate.now().getYear() + date + time.substring(0, 5),
-        DateTimeFormatter.ofPattern("yyyyEE dd.MM.HH:mm"));
-
-    ArrayList<AiringData> airingData = Lists.newArrayList(
-        AiringData.builder()
-            .withChannel(entity.getChannel())
-            .withDate(date)
-            .withTime(time)
-            .withLocalDateTime(localDateTime)
-            .build());
+    List<AiringData> airingData = Lists.newArrayList(getAiringData(entity));
 
     return MovieViewModel.builder()
+        .withId(airingData.stream().findFirst().map(AiringData::getId).orElse(null))
         .withCallDate(entity.getCallDate())
         .withAiringDatas(airingData)
         .withCountry(entity.getCountry())
         .withGenre(entity.getGenre())
-        .withId(entity.getId())
         .withImdbRating(entity.getImdbRating())
         .withImdbUrl(
             Optional.ofNullable(entity.getImdbId()).map(id -> String.format("https://www.imdb.com/title/%s/", id)).orElse(null))
@@ -63,6 +53,32 @@ public class MovieConverter {
         .withImages(entity.getImages())
         .withDescription(entity.getDescription())
         .withTipp(entity.isTipp())
+        .build();
+  }
+
+  public AiringData getAiringData(MovieEntity entity) {
+    String date = entity.getDate();
+    String time = entity.getTime();
+
+    LocalDateTime startTime = LocalDateTime.parse(LocalDate.now().getYear() + date + time.substring(0, 5),
+        DateTimeFormatter.ofPattern("yyyyEE dd.MM.HH:mm", Locale.GERMANY));
+
+    LocalDateTime endTime = LocalDateTime.parse(LocalDate.now().getYear() + date + time.substring(8),
+        DateTimeFormatter.ofPattern("yyyyEE dd.MM.HH:mm", Locale.GERMANY));
+
+    if (endTime.isBefore(startTime)) {
+      endTime = endTime.plusDays(1);
+    }
+
+    return AiringData.builder()
+        .withId(entity.getId())
+        .withChannel(entity.getChannel())
+        .withDate(date)
+        .withTime(time)
+        .withStart(startTime)
+        .withEnd(endTime)
+        .withCanRecord(OpenWebifService.TVS_TO_RECORD_CHANNEL.get(entity.getChannel()) != null)
+        .withRecorded(entity.isRecorded())
         .build();
   }
 

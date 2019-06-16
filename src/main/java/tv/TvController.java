@@ -13,7 +13,9 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -48,6 +50,14 @@ public class TvController {
     tvComponent.update(date);
 
     return new WebSocketMessage("done");
+  }
+
+  @PostMapping("/toggleRecord/")
+  @ResponseBody
+  public SuccessResult toggleRecord(@RequestParam Integer id) {
+    boolean success = tvComponent.toggleRecord(id);
+
+    return new SuccessResult(success);
   }
 
 }

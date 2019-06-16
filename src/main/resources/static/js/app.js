@@ -42,13 +42,21 @@ function showGreeting(message) {
 }
 
 $(function () {
-    $("form").on('submit', function (e) {
-        e.preventDefault();
-    });
     $( "#update" ).click(function() {
       $('.overlay').show();
       $('.circular-chart').show();
       connect();
     });
 
+    $('.record, .recorded').click(function() {
+      var el = $(this)
+      $.post('/toggleRecord/', {"id" : $(this).data('id')}, function(responseData) {
+        if (!responseData.success) {
+          el.toggleClass('record recorded');
+          el.addClass('editable');
+        }
+      });
+      el.toggleClass('record recorded');
+      el.removeClass('editable');
+    });
 });

@@ -44,6 +44,9 @@ public class TvComponent {
   @Inject
   private SimpMessageSendingOperations messagingTemplate;
 
+  @Inject
+  private OpenWebifService openWebifService;
+
   public ImmutableList<CategoryViewModel> getMovies(String date) {
     List<MovieViewModel> movies = Lists.newArrayList(movieRepository.findByCallDate(date)).stream()
         .map(movieConverter::toViewModel)
@@ -120,35 +123,22 @@ public class TvComponent {
 
     List<MovieEntity> rawData = docs.parallelStream()
         .flatMap(this::getElements)
-        // .peek(a -> System.out
-        // .println(Thread.currentThread().getId() + " " + "aaaaaaaaaaaaaa: " + a.select(".col-3 strong a").text() + " "
-        // + a.select(".col-2 strong").html()))
         .map(this::getTvSpielfilmOverviewData)
-        // .peek(a -> System.out.println(Thread.currentThread().getId() + " " + "bbbbbbbbbbbbbb: " + a.getTitle()))
         .filter(this::filterMovies)
-        // .peek(a -> System.out.println(Thread.currentThread().getId() + " " + "cccccccccccccc: " + a.getTitle()))
         .map(t -> MovieEntity.builder().withTvSpielfilmOverviewData(t))
-        // .peek(a -> System.out.println(Thread.currentThread().getId() + " " + "ddddddddddddddd"))
         .map(t -> t.build())
-        // .peek(a -> System.out.println(Thread.currentThread().getId() + " " + "eeeeeeeeeeeeeee: " + a.getTitle()))
         .collect(Collectors.toList());
 
     int totalSize = rawData.size();
 
     rawData.parallelStream()
-        // .peek(a -> System.out.println(Thread.currentThread().getId() + " " + "fffffffffffffffff: " + a.getTitle()))
         .map(this::addTvSpielfilmDetailData)
-        // .peek(a -> System.out.println(Thread.currentThread().getId() + " " + "ggggggggggggggg: " + a.getTitle()))
         .map(this::addImdbSuggestData)
-        // .peek(a -> System.out.println(Thread.currentThread().getId() + " " + "hhhhhhhhhhhhhhhhhh: " + a.getTitle()))
         .map(this::addImdbDetailData)
-        // .peek(a -> System.out.println(Thread.currentThread().getId() + " " + "iiiiiiiiiiiiiiiii: " + a.getTitle()))
         .map(entity -> entity.but().withCallDate(date).build())
         .peek(entity -> messagingTemplate.convertAndSend("/topic/movies", new WebSocketMessage(String.valueOf(totalSize))))
-        // .peek(a -> System.out.println(Thread.currentThread().getId() + " " + "jjjjjjjjjjjjjjjjjj: " + a.getTitle()))
         .collect(Collectors.toList())
         .stream()
-        // .peek(a -> System.out.println(Thread.currentThread().getId() + " " + "kkkkkkkkkkkkkkkkkk: " + a.getTitle()))
         .forEach(entity -> movieRepository.save(entity));
 
   }
@@ -341,6 +331,19 @@ public class TvComponent {
       e.printStackTrace();
       return null;
     }
+  }
+
+  public boolean toggleRecord(Integer id) {
+    Optional<MovieEntity> entity = movieRepository.findById(id);
+    boolean success = entity
+        .map(e -> e.isRecorded() ? openWebifService.timerDelete(e) : openWebifService.timerAdd(e))
+        .orElse(false);
+
+    if (success) {
+      movieRepository.save(entity.get().but().withRecorded(!entity.get().isRecorded()).build());
+    }
+
+    return success;
   }
 
 }

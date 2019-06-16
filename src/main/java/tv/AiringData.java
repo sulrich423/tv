@@ -4,16 +4,36 @@ import java.time.LocalDateTime;
 
 public class AiringData {
 
+  private final Integer id;
   private final String channel;
   private final String date;
   private final String time;
-  private final LocalDateTime localDateTime;
+  private final LocalDateTime start;
+  private final LocalDateTime end;
+  private final boolean canRecord;
+  private final boolean recorded;
 
   private AiringData(Builder builder) {
+    this.id = builder.id;
     this.channel = builder.channel;
     this.date = builder.date;
     this.time = builder.time;
-    this.localDateTime = builder.localDateTime;
+    this.start = builder.start;
+    this.end = builder.end;
+    this.canRecord = builder.canRecord;
+    this.recorded = builder.recorded;
+  }
+
+  public Integer getId() {
+    return id;
+  }
+
+  public boolean isRecorded() {
+    return recorded;
+  }
+
+  public boolean isCanRecord() {
+    return canRecord;
   }
 
   public String getChannel() {
@@ -28,8 +48,12 @@ public class AiringData {
     return time;
   }
 
-  public LocalDateTime getLocalDateTime() {
-    return localDateTime;
+  public LocalDateTime getStart() {
+    return start;
+  }
+
+  public LocalDateTime getEnd() {
+    return end;
   }
 
   public static Builder builder() {
@@ -37,12 +61,21 @@ public class AiringData {
   }
 
   public static final class Builder {
+    private Integer id;
     private String channel;
     private String date;
     private String time;
-    private LocalDateTime localDateTime;
+    private LocalDateTime start;
+    private LocalDateTime end;
+    private boolean canRecord;
+    private boolean recorded;
 
     private Builder() {
+    }
+
+    public Builder withId(Integer id) {
+      this.id = id;
+      return this;
     }
 
     public Builder withChannel(String channel) {
@@ -60,8 +93,23 @@ public class AiringData {
       return this;
     }
 
-    public Builder withLocalDateTime(LocalDateTime localDateTime) {
-      this.localDateTime = localDateTime;
+    public Builder withStart(LocalDateTime start) {
+      this.start = start;
+      return this;
+    }
+
+    public Builder withEnd(LocalDateTime end) {
+      this.end = end;
+      return this;
+    }
+
+    public Builder withCanRecord(boolean canRecord) {
+      this.canRecord = canRecord;
+      return this;
+    }
+
+    public Builder withRecorded(boolean recorded) {
+      this.recorded = recorded;
       return this;
     }
 
