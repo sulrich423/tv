@@ -1,0 +1,8 @@
+sudo: false
+language: java
+jdk: openjdk12
+
+after_success:
+  - docker build -t sulrich423/tv:latest .
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker push sulrich423/tv:latest
