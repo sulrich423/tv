@@ -9,3 +9,8 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: tv
       MYSQL_ROOT_HOST: 127.0.0.1
+  tv:
+    container_name: tv
+    image: "sulrich423/tv:latest"
+    ports:
+      - "8080:8080"

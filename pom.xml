@@ -3,7 +3,7 @@
   <groupId>com</groupId>
   <artifactId>tv</artifactId>
   <packaging>war</packaging>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
 
   <parent>
     <groupId>org.springframework.boot</groupId>
@@ -127,7 +127,7 @@
   </dependencies>
 
   <properties>
-    <java.version>1.8</java.version>
+    <java.version>12</java.version>
   </properties>
 
 

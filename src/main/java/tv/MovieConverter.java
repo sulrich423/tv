@@ -21,7 +21,7 @@ public class MovieConverter {
   private static final ImmutableMap<String, Integer> TV_SPIELFILM_RANK_MAP = ImmutableMap.of("1", 60, "2", 40, "3", 20);
 
   private static final ImmutableMap<Range<Integer>, RatingClass> METACRITIC_CLASS_MAPPING = ImmutableMap
-      .<Range<Integer>, RatingClass> builder()
+      .<Range<Integer>, RatingClass>builder()
       .put(Range.lessThan(40), RatingClass.BAD)
       .put(Range.closedOpen(40, 60), RatingClass.MEDIUM)
       .put(Range.atLeast(60), RatingClass.GOOD)
@@ -59,14 +59,14 @@ public class MovieConverter {
   }
 
   public AiringData getAiringData(MovieEntity entity) {
-    String date = entity.getDate();
+    String date = new StringBuilder(entity.getDate()).insert(2, '.').toString();
     String time = entity.getTime();
 
     LocalDateTime startTime = LocalDateTime.parse(LocalDate.now().getYear() + date + time.substring(0, 5),
-        DateTimeFormatter.ofPattern("yyyyEE dd.MM.HH:mm", Locale.GERMANY));
+        DateTimeFormatter.ofPattern("yyyyEE dd.MM.HH:mm", Locale.GERMAN));
 
     LocalDateTime endTime = LocalDateTime.parse(LocalDate.now().getYear() + date + time.substring(8),
-        DateTimeFormatter.ofPattern("yyyyEE dd.MM.HH:mm", Locale.GERMANY));
+        DateTimeFormatter.ofPattern("yyyyEE dd.MM.HH:mm", Locale.GERMAN));
 
     if (endTime.isBefore(startTime)) {
       endTime = endTime.plusDays(1);
