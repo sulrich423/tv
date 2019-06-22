@@ -553,3 +553,13 @@ a, a:hover {
 .category {
   padding: 50px;
 }
+
+.carousel-item {
+  background-color: #eee;
+}
+
+.carousel-item img {
+   width: auto;
+   height: 222px;
+   margin: auto;
+}
