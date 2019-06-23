@@ -73,7 +73,7 @@ public class TvComponent {
         .collect(Collectors.groupingBy(
             movie -> movie.getCountries().stream().allMatch(country -> GERMANY_LANGUAGE_COUNTRIES.contains(country))));
 
-    List<MovieViewModel> notGermanMovies = germanAndNotGermanMovies.get(false);
+    List<MovieViewModel> notGermanMovies = ListUtils.emptyIfNull(germanAndNotGermanMovies.get(false));
 
     Map<Boolean, List<MovieViewModel>> seriesOrNot = notGermanMovies.stream()
         .collect(Collectors
