@@ -38,6 +38,7 @@ public class MovieConverter {
         .withCallDate(entity.getCallDate())
         .withAiringDatas(airingData)
         .withCountry(entity.getCountry())
+        .withCountries(Lists.newArrayList(Strings.nullToEmpty(entity.getCountry()).split("/")))
         .withGenre(entity.getGenre())
         .withImdbRating(entity.getImdbRating())
         .withImdbUrl(

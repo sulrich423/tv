@@ -44,7 +44,8 @@ public class TvComponent {
 
   private static final ImmutableList<String> CHANNEL_BLACK_LIST = ImmutableList.of("3PLUS", "ATV", "ATV2", "ORF1", "ORF2", "ORF3",
       "PULS4", "PULS8", "SF1", "SF2", "STTV", "BE1", "BIBEL", "ZEE-1");
-  private static final ImmutableList<String> COUNTRY_BLACK_LIST = ImmutableList.of("D", "D/A", "A/D", "A", "BRD", "DDR");
+
+  private static final ImmutableList<String> GERMANY_LANGUAGE_COUNTRIES = ImmutableList.of("D", "A", "CH", "BRD", "DDR");
 
   @Inject
   private MovieConverter movieConverter;
@@ -68,7 +69,13 @@ public class TvComponent {
             .thenComparing(Comparator.comparing(MovieViewModel::getTitle)))
         .collect(Collectors.toList());
 
-    Map<Boolean, List<MovieViewModel>> seriesOrNot = sortedMovies.stream()
+    Map<Boolean, List<MovieViewModel>> germanAndNotGermanMovies = sortedMovies.stream()
+        .collect(Collectors.groupingBy(
+            movie -> movie.getCountries().stream().allMatch(country -> GERMANY_LANGUAGE_COUNTRIES.contains(country))));
+
+    List<MovieViewModel> notGermanMovies = germanAndNotGermanMovies.get(false);
+
+    Map<Boolean, List<MovieViewModel>> seriesOrNot = notGermanMovies.stream()
         .collect(Collectors
             .partitioningBy(movie -> StringUtils.containsAny(movie.getTitle(), ':', '-') && movie.getGenre().startsWith("TV-")));
 
@@ -80,7 +87,7 @@ public class TvComponent {
                 .map(a -> Integer.parseInt(a.getTime().substring(0, 2)))
                 .anyMatch(a -> a >= 5 && a < 20)));
 
-    return ImmutableList.<CategoryViewModel> builder()
+    return ImmutableList.<CategoryViewModel>builder()
         .add(CategoryViewModel.builder()
             .withCategoryName("Nach 20 Uhr")
             .withMovies(beforeOrAfter8.get(false))
@@ -93,6 +100,10 @@ public class TvComponent {
             .withCategoryName("TV-Reihen")
             .withMovies(seriesOrNot.get(true))
             .build())
+        .add(CategoryViewModel.builder()
+            .withCategoryName("Deutsche Filme")
+            .withMovies(germanAndNotGermanMovies.get(true))
+            .build())
         .build();
   }
 
@@ -104,7 +115,7 @@ public class TvComponent {
           .findFirst();
 
       if (duplicateValue.isPresent()) {
-        MovieViewModel combinedValue = Lists.<MovieViewModel> newArrayList(duplicateValue.get(), movieViewModel).stream()
+        MovieViewModel combinedValue = Lists.<MovieViewModel>newArrayList(duplicateValue.get(), movieViewModel).stream()
             .sorted(Comparator.comparing(a -> a.getAiringDatas().get(0).getStart()))
             .findFirst().get()
             .but()
@@ -159,8 +170,7 @@ public class TvComponent {
   }
 
   private boolean filterMovies(TvSpielfilmOverviewData tvSpielfilmOverviewData) {
-    return !CHANNEL_BLACK_LIST.contains(tvSpielfilmOverviewData.getChannel())
-        && !COUNTRY_BLACK_LIST.contains(tvSpielfilmOverviewData.getCountry());
+    return !CHANNEL_BLACK_LIST.contains(tvSpielfilmOverviewData.getChannel());
   }
 
   private List<Document> getAllTvSpielfilmDocs(int page, String date) {

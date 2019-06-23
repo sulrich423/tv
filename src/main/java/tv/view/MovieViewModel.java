@@ -9,6 +9,7 @@ public class MovieViewModel {
   private final String title;
   private final String originalTitle;
   private final String country;
+  private final List<String> countries;
   private final String year;
   private final String tvSpielfilmRating;
   private final String imdbRating;
@@ -33,6 +34,7 @@ public class MovieViewModel {
     this.title = builder.title;
     this.originalTitle = builder.originalTitle;
     this.country = builder.country;
+    this.countries = builder.countries;
     this.year = builder.year;
     this.tvSpielfilmRating = builder.tvSpielfilmRating;
     this.imdbRating = builder.imdbRating;
@@ -87,6 +89,10 @@ public class MovieViewModel {
 
   public int getRanking() {
     return ranking;
+  }
+
+  public List<String> getCountries() {
+    return countries;
   }
 
   public String getTitle() {
@@ -149,6 +155,7 @@ public class MovieViewModel {
         .withAwards(awards)
         .withCallDate(callDate)
         .withCountry(country)
+        .withCountries(countries)
         .withDescription(description)
         .withDirector(director)
         .withGenre(genre)
@@ -217,11 +224,16 @@ public class MovieViewModel {
     return new Builder();
   }
 
+  public static Builder but(MovieViewModel movieViewModel) {
+    return new Builder(movieViewModel);
+  }
+
   public static final class Builder {
     private Integer id;
     private String title;
     private String originalTitle;
     private String country;
+    private List<String> countries = Collections.emptyList();
     private String year;
     private String tvSpielfilmRating;
     private String imdbRating;
@@ -244,6 +256,32 @@ public class MovieViewModel {
     private Builder() {
     }
 
+    private Builder(MovieViewModel movieViewModel) {
+      this.id = movieViewModel.id;
+      this.title = movieViewModel.title;
+      this.originalTitle = movieViewModel.originalTitle;
+      this.country = movieViewModel.country;
+      this.countries = movieViewModel.countries;
+      this.year = movieViewModel.year;
+      this.tvSpielfilmRating = movieViewModel.tvSpielfilmRating;
+      this.imdbRating = movieViewModel.imdbRating;
+      this.metacriticRating = movieViewModel.metacriticRating;
+      this.metacriticClass = movieViewModel.metacriticClass;
+      this.director = movieViewModel.director;
+      this.images = movieViewModel.images;
+      this.description = movieViewModel.description;
+      this.airingDatas = movieViewModel.airingDatas;
+      this.genre = movieViewModel.genre;
+      this.imdbUrl = movieViewModel.imdbUrl;
+      this.tvSpielfilmDetailUrl = movieViewModel.tvSpielfilmDetailUrl;
+      this.ranking = movieViewModel.ranking;
+      this.stars = movieViewModel.stars;
+      this.callDate = movieViewModel.callDate;
+      this.tipp = movieViewModel.tipp;
+      this.isNew = movieViewModel.isNew;
+      this.awards = movieViewModel.awards;
+    }
+
     public Builder withId(Integer id) {
       this.id = id;
       return this;
@@ -261,6 +299,11 @@ public class MovieViewModel {
 
     public Builder withCountry(String country) {
       this.country = country;
+      return this;
+    }
+
+    public Builder withCountries(List<String> countries) {
+      this.countries = countries;
       return this;
     }
 
