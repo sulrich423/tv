@@ -1,4 +1,4 @@
-package tv;
+package tv.view;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -17,6 +17,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import tv.TvComponent;
+import tv.websocket.DateMessage;
+import tv.websocket.WebSocketMessage;
 
 @Controller
 public class TvController {
@@ -40,10 +44,8 @@ public class TvController {
     return new ModelAndView("categories", modelMap);
   }
 
-  // @GetMapping("/update/")
   @MessageMapping("/update")
   @SendTo("/topic/movies")
-  // public SuccessResult update(@RequestParam String date, DateMessage dateMessage) {
   public WebSocketMessage update(DateMessage dateMessage) {
     String date = dateMessage.getDate();
     tvComponent.delete(date);

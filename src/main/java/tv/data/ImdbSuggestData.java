@@ -1,4 +1,4 @@
-package tv;
+package tv.data;
 
 public class ImdbSuggestData {
 

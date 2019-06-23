@@ -1,4 +1,4 @@
-package tv;
+package tv.websocket;
 
 public class DateMessage {
 

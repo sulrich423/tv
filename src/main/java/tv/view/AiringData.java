@@ -1,4 +1,4 @@
-package tv;
+package tv.view;
 
 import java.time.LocalDateTime;
 

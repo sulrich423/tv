@@ -1,4 +1,4 @@
-package tv;
+package tv.openwebif;
 
 import java.net.URI;
 import java.time.ZoneId;
@@ -15,12 +15,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.google.common.collect.ImmutableMap;
 
+import tv.db.MovieEntity;
+import tv.view.AiringData;
+import tv.view.MovieConverter;
+
 @Component
 public class OpenWebifService {
 
   private static final String BASE_URL = "http://192.168.178.26/api/";
 
-  public static final ImmutableMap<String, String> TVS_TO_RECORD_CHANNEL = ImmutableMap.<String, String> builder()
+  public static final ImmutableMap<String, String> TVS_TO_RECORD_CHANNEL = ImmutableMap.<String, String>builder()
       .put("ARD", "Das Erste HD")
       .put("ZDF", "ZDF HD")
       .put("RTL", "RTL Television")
@@ -77,7 +81,7 @@ public class OpenWebifService {
           .buildGet()
           .invoke(String.class);
 
-      TimerAddResponse response = new ObjectMapper().readValue(responseString, TimerAddResponse.class);
+      TimerResponse response = new ObjectMapper().readValue(responseString, TimerResponse.class);
 
       return response.isSuccess();
     } catch (Exception e) {

@@ -1,4 +1,4 @@
-package tv;
+package tv.view;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,6 +14,9 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Range;
+
+import tv.db.MovieEntity;
+import tv.openwebif.OpenWebifService;
 
 @Component
 public class MovieConverter {

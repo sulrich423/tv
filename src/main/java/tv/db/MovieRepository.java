@@ -1,4 +1,4 @@
-package tv;
+package tv.db;
 
 import java.util.List;
 

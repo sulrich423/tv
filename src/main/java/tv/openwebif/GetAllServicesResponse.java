@@ -1,4 +1,4 @@
-package tv;
+package tv.openwebif;
 
 import java.util.List;
 

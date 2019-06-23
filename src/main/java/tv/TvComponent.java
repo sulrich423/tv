@@ -27,6 +27,17 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 import tv.ImdbSuggestResponse.Entry;
+import tv.data.ImdbDetailData;
+import tv.data.ImdbSuggestData;
+import tv.data.TvSpielfilmOverviewData;
+import tv.db.MovieEntity;
+import tv.db.MovieRepository;
+import tv.openwebif.OpenWebifService;
+import tv.view.AiringData;
+import tv.view.CategoryViewModel;
+import tv.view.MovieConverter;
+import tv.view.MovieViewModel;
+import tv.websocket.WebSocketMessage;
 
 @Component
 public class TvComponent {

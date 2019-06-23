@@ -1,8 +1,8 @@
-package tv;
+package tv.openwebif;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class TimerAddResponse {
+public class TimerResponse {
 
   private String message;
 

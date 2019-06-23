@@ -1,4 +1,4 @@
-package tv;
+package tv.view;
 
 import java.util.Collections;
 import java.util.List;

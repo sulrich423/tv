@@ -1,4 +1,4 @@
-package tv;
+package tv.view;
 
 public class SuccessResult {
 
