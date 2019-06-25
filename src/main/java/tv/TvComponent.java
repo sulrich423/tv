@@ -139,12 +139,9 @@ public class TvComponent {
   }
 
   @Transactional
-  public void delete(String date) {
-    movieRepository.deleteByCallDate(date);
-  }
-
-  @Transactional
   public void update(String date) {
+    movieRepository.deleteByCallDate(date);
+
     List<Document> docs = getAllTvSpielfilmDocs(1, date);
 
     List<MovieEntity> rawData = docs.parallelStream()

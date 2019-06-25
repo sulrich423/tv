@@ -48,7 +48,6 @@ public class TvController {
   @SendTo("/topic/movies")
   public WebSocketMessage update(DateMessage dateMessage) {
     String date = dateMessage.getDate();
-    tvComponent.delete(date);
     tvComponent.update(date);
 
     return new WebSocketMessage("done");
