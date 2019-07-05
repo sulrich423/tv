@@ -321,14 +321,20 @@ public class TvComponent {
 
   private ImdbSuggestResponse jsonGet(String url) {
     System.out.println(url);
-    return ClientBuilder.newClient()
-        .register(JacksonJsonProvider.class)
-        .target(url)
-        .request()
-        .header("user-agent",
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36")
-        .buildGet()
-        .invoke(ImdbSuggestResponse.class);
+    try {
+      ImdbSuggestResponse response = ClientBuilder.newClient()
+          .register(JacksonJsonProvider.class)
+          .target(url)
+          .request()
+          .header("user-agent",
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36")
+          .buildGet()
+          .invoke(ImdbSuggestResponse.class);
+      return response;
+    } catch (Exception e) {
+      e.printStackTrace();
+      return new ImdbSuggestResponse();
+    }
   }
 
   private String createImdbSuggestUrl(String title) {
