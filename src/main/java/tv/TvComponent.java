@@ -342,7 +342,7 @@ public class TvComponent {
     urlTitle = urlTitle.toLowerCase().replace("ß", "ss").replace("ö", "o").replace("ü", "u").replace("ä", "a")
         .replaceAll(" ",
             "_")
-        .replaceAll("[\\?\\!\\(\\)\\-–’\\:]", "");
+        .replaceAll("[\\?\\!\\(\\)\\-–’\\:/\\[\\]…]", "");
     return "https://v2.sg.media-imdb.com/suggestion/" + urlTitle.substring(0, 1) + "/"
         + urlTitle + ".json";
   }
