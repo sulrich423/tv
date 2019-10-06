@@ -1,4 +1,4 @@
-FROM arm32v7/adoptopenjdk:12.0.1_12-jdk-hotspot
+FROM sulrich423/adoptopenjdk:12.0.1_12-jdk-hotspot-arm
 
 COPY tv-*.war tv.war
 
