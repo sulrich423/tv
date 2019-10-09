@@ -365,14 +365,14 @@ public class MovieEntity {
     }
 
     public Builder withImdbSuggestData(ImdbSuggestData imdbSuggestData) {
-      return withImdbId(imdbSuggestData.getImdbId())
-          .withStars(imdbSuggestData.getStars());
+      return withImdbId(imdbSuggestData.getImdbId());
     }
 
     public Builder withImdbDetailData(ImdbDetailData imdbDetailData) {
       return withImdbRating(imdbDetailData.getImdbRating())
           .withMetacriticRating(imdbDetailData.getMetacriticRating())
-          .withAwards(imdbDetailData.getAwards());
+          .withAwards(imdbDetailData.getAwards())
+          .withStars(imdbDetailData.getStars());
     }
 
     public MovieEntity build() {

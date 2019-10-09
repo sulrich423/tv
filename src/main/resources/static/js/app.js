@@ -101,5 +101,13 @@ $(function () {
       $(this).parent().parent().parent().toggleClass('rotate');
     });
 
+    $('.update-single').click(function() {
+      $.post('/updateSingle/', {"id" : $(this).data('id'), "url" : $(this).parent().parent().children('input').val() }, function(responseData) {
+        if (responseData.success) {
+          location.reload();
+        }
+      });
+    });
+
 
 });

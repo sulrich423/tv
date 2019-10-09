@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -22,10 +24,12 @@ import org.jsoup.nodes.Element;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
+import tv.ImdbDetailSchemaOrg.Actor;
 import tv.ImdbSuggestResponse.Entry;
 import tv.data.ImdbDetailData;
 import tv.data.ImdbSuggestData;
@@ -279,10 +283,8 @@ public class TvComponent {
     ImdbSuggestData imdbSuggestData;
     if (entry != null) {
       String imdbId = entry.getId();
-      String stars = entry.getStars();
       imdbSuggestData = ImdbSuggestData.builder()
           .withImdbId(imdbId)
-          .withStars(stars)
           .build();
     } else {
       imdbSuggestData = ImdbSuggestData.builder().build();
@@ -305,10 +307,18 @@ public class TvComponent {
 
       String awards = doc.select(".awards-blurb b").text();
 
+      String schemaOrgString = doc.select("script[type=application/ld+json]").html();
+      ImdbDetailSchemaOrg schemaOrg = getImdbDetailSchemaOrg(schemaOrgString);
+      String stars = schemaOrg.getActor().stream()
+          .map(Actor::getName)
+          .limit(2)
+          .collect(Collectors.joining(", "));
+
       ImdbDetailData imdbDetailData = ImdbDetailData.builder()
           .withImdbRating(imdbRating)
           .withMetacriticRating(metaCriticRating)
           .withAwards(awards)
+          .withStars(stars)
           .build();
       return movieEntity.but()
           .withImdbDetailData(imdbDetailData)
@@ -319,6 +329,15 @@ public class TvComponent {
 
   }
 
+  private ImdbDetailSchemaOrg getImdbDetailSchemaOrg(String schemaOrgString) {
+    try {
+      return new ObjectMapper().readValue(schemaOrgString, ImdbDetailSchemaOrg.class);
+    } catch (IOException e) {
+      e.printStackTrace();
+      return new ImdbDetailSchemaOrg();
+    }
+  }
+
   private ImdbSuggestResponse jsonGet(String url) {
     System.out.println(url);
     try {
@@ -327,7 +346,7 @@ public class TvComponent {
           .target(url)
           .request()
           .header("user-agent",
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36")
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36")
           .buildGet()
           .invoke(ImdbSuggestResponse.class);
       return response;
@@ -371,6 +390,19 @@ public class TvComponent {
     }
 
     return success;
+  }
+
+  public void updateSingle(Integer id, String url) {
+    Optional<MovieEntity> entity = movieRepository.findById(id);
+    if (entity.isPresent()) {
+      Matcher matcher = Pattern.compile("https://(?:www|m).imdb.com/title/(.*?)/.*").matcher(url);
+      if (matcher.matches()) {
+        String imdbId = matcher.group(1);
+        MovieEntity updatedEntity = addImdbDetailData(entity.get().but().withImdbId(imdbId).build());
+        movieRepository.save(updatedEntity);
+      }
+    }
+
   }
 
 }

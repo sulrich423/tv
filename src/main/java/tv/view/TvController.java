@@ -61,4 +61,12 @@ public class TvController {
     return new SuccessResult(success);
   }
 
+  @PostMapping("/updateSingle/")
+  @ResponseBody
+  public SuccessResult updateSingle(@RequestParam Integer id, @RequestParam String url) {
+    tvComponent.updateSingle(id, url);
+
+    return new SuccessResult(true);
+  }
+
 }

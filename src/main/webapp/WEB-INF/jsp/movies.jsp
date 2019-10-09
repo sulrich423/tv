@@ -31,11 +31,32 @@
                 </c:if>
               </span>
             </a>
-            <c:if test="${not empty movie.imdbRating}">
-              <span class="imdbRating">
+            <span class="imdbRating" data-toggle="modal" data-target="#exampleModal${movie.id}">
+              <c:if test="${not empty movie.imdbRating}">
                 <strong><span>${movie.imdbRating}</span></strong><span class="grey">/</span><span class="grey">10</span>
-              </span>
-            </c:if>
+              </c:if>
+            </span>
+
+            <div class="modal fade" id="exampleModal${movie.id}" tabindex="-1" data-backdrop="false" role="dialog" aria-labelledby="exampleModalLabel${movie.id}" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel${movie.id}">Change IMDb-Infos</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="IMDb-Url" aria-label="IMDb-Url" aria-describedby="basic-addon2" name="url">
+                      <div class="input-group-append">
+                        <button data-id="${movie.id}" class="update-single btn btn-outline-secondary" type="button">Submit</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <span class="metascore_w larger tvshow ${movie.metacriticClass}">${movie.metacriticRating}</span>
           </div>
           <div class="mt-2">

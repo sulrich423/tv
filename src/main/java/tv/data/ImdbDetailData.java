@@ -5,11 +5,13 @@ public class ImdbDetailData {
   private final String imdbRating;
   private final String metacriticRating;
   private final String awards;
+  private final String stars;
 
   private ImdbDetailData(Builder builder) {
     this.imdbRating = builder.imdbRating;
     this.metacriticRating = builder.metacriticRating;
     this.awards = builder.awards;
+    this.stars = builder.stars;
   }
 
   public String getImdbRating() {
@@ -24,16 +26,32 @@ public class ImdbDetailData {
     return awards;
   }
 
+  public String getStars() {
+    return stars;
+  }
+
   public static Builder builder() {
     return new Builder();
+  }
+
+  public static Builder but(ImdbDetailData imdbDetailData) {
+    return new Builder(imdbDetailData);
   }
 
   public static final class Builder {
     private String imdbRating;
     private String metacriticRating;
     private String awards;
+    private String stars;
 
     private Builder() {
+    }
+
+    private Builder(ImdbDetailData imdbDetailData) {
+      this.imdbRating = imdbDetailData.imdbRating;
+      this.metacriticRating = imdbDetailData.metacriticRating;
+      this.awards = imdbDetailData.awards;
+      this.stars = imdbDetailData.stars;
     }
 
     public Builder withImdbRating(String imdbRating) {
@@ -48,6 +66,11 @@ public class ImdbDetailData {
 
     public Builder withAwards(String awards) {
       this.awards = awards;
+      return this;
+    }
+
+    public Builder withStars(String stars) {
+      this.stars = stars;
       return this;
     }
 
