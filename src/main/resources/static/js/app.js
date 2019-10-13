@@ -66,7 +66,7 @@ function calcHeight() {
 
 
 $(function () {
-    $( "#update" ).click(function() {
+    $( ".update" ).click(function() {
       $('.overlay').show();
       $('.circular-chart').show();
       connect();
