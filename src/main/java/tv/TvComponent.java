@@ -24,6 +24,7 @@ import org.jsoup.nodes.Element;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.google.common.collect.ImmutableList;
@@ -331,7 +332,8 @@ public class TvComponent {
 
   private ImdbDetailSchemaOrg getImdbDetailSchemaOrg(String schemaOrgString) {
     try {
-      return new ObjectMapper().readValue(schemaOrgString, ImdbDetailSchemaOrg.class);
+      return new ObjectMapper().configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true).readValue(schemaOrgString,
+          ImdbDetailSchemaOrg.class);
     } catch (IOException e) {
       e.printStackTrace();
       return new ImdbDetailSchemaOrg();
@@ -361,7 +363,7 @@ public class TvComponent {
     urlTitle = urlTitle.toLowerCase().replace("ß", "ss").replace("ö", "o").replace("ü", "u").replace("ä", "a")
         .replaceAll(" ",
             "_")
-        .replaceAll("[\\?\\!\\(\\)\\-–’\\:/\\[\\]…]", "");
+        .replaceAll("[\\?\\!\\(\\)\\-–’\\:/\\[\\]…#]", "");
     return "https://v2.sg.media-imdb.com/suggestion/" + urlTitle.substring(0, 1) + "/"
         + urlTitle + ".json";
   }
