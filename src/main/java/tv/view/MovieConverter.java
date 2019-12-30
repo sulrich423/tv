@@ -1,5 +1,6 @@
 package tv.view;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -63,13 +64,23 @@ public class MovieConverter {
   }
 
   public AiringData getAiringData(MovieEntity entity) {
+    LocalDate callDate = LocalDate.parse(entity.getCallDate());
+
+    int year = callDate.getYear();
     String date = new StringBuilder(entity.getDate()).insert(2, '.').toString();
     String time = entity.getTime();
 
-    LocalDateTime startTime = LocalDateTime.parse(LocalDate.now().getYear() + date + time.substring(0, 5),
-        DateTimeFormatter.ofPattern("yyyyEE dd.MM.HH:mm", Locale.GERMAN));
+    LocalDateTime startTime;
+    try {
+      startTime = LocalDateTime.parse(year + date + time.substring(0, 5),
+          DateTimeFormatter.ofPattern("yyyyEE dd.MM.HH:mm", Locale.GERMAN));
+    } catch (DateTimeException e) {
+      year++;
+      startTime = LocalDateTime.parse(year + date + time.substring(0, 5),
+          DateTimeFormatter.ofPattern("yyyyEE dd.MM.HH:mm", Locale.GERMAN));
+    }
 
-    LocalDateTime endTime = LocalDateTime.parse(LocalDate.now().getYear() + date + time.substring(8),
+    LocalDateTime endTime = LocalDateTime.parse(year + date + time.substring(8),
         DateTimeFormatter.ofPattern("yyyyEE dd.MM.HH:mm", Locale.GERMAN));
 
     if (endTime.isBefore(startTime)) {
