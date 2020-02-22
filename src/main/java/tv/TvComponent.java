@@ -236,12 +236,6 @@ public class TvComponent {
 
     Document doc = jsoupGet(tvSpielfilmDetailUrl);
 
-    String originalTitle = doc.select("section.cast dt").stream()
-        .filter(element -> element.text().equals("Originaltitel:"))
-        .findFirst()
-        .map(element -> element.nextElementSibling().text())
-        .orElse(null);
-
     String director = doc.select("section.cast dt").stream()
         .filter(element -> element.text().equals("Regie:"))
         .findFirst()
@@ -260,7 +254,6 @@ public class TvComponent {
     boolean isNew = !doc.select(".broadcast-detail__header .icon-new").isEmpty();
 
     return movieEntity.but()
-        .withOriginalTitle(originalTitle)
         .withDirector(director)
         .withImages(images)
         .withDescription(description)
@@ -320,6 +313,7 @@ public class TvComponent {
           .withMetacriticRating(metaCriticRating)
           .withAwards(awards)
           .withStars(stars)
+          .withOriginalTitle(schemaOrg.getName())
           .build();
       return movieEntity.but()
           .withImdbDetailData(imdbDetailData)

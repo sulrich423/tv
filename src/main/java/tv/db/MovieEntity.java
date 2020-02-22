@@ -372,7 +372,8 @@ public class MovieEntity {
       return withImdbRating(imdbDetailData.getImdbRating())
           .withMetacriticRating(imdbDetailData.getMetacriticRating())
           .withAwards(imdbDetailData.getAwards())
-          .withStars(imdbDetailData.getStars());
+          .withStars(imdbDetailData.getStars())
+          .withOriginalTitle(imdbDetailData.getOriginalTitle());
     }
 
     public MovieEntity build() {

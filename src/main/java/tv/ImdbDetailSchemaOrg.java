@@ -9,9 +9,14 @@ import com.google.common.collect.Lists;
 public class ImdbDetailSchemaOrg {
 
   private List<Actor> actor = Lists.newArrayList();
+  private String name;
 
   public List<Actor> getActor() {
     return actor;
+  }
+
+  public String getName() {
+    return name;
   }
 
   @JsonIgnoreProperties(ignoreUnknown = true)
