@@ -48,7 +48,7 @@ import tv.websocket.WebSocketMessage;
 public class TvComponent {
 
   private static final ImmutableList<String> CHANNEL_BLACK_LIST = ImmutableList.of("3PLUS", "ATV", "ATV2", "ORF1", "ORF2", "ORF3",
-      "PULS4", "PULS8", "SF1", "SF2", "STTV", "BE1", "BIBEL", "ZEE-1", "EOTV", "SPORT");
+      "PULS4", "PULS8", "SF1", "SF2", "STTV", "BE1", "BIBEL", "ZEE-1", "EOTV", "SPORT", "DR1", "TV2", "CPLUSC");
 
   private static final ImmutableList<String> GERMANY_LANGUAGE_COUNTRIES = ImmutableList.of("D", "A", "CH", "BRD", "DDR");
 
@@ -367,7 +367,7 @@ public class TvComponent {
       System.out.println(url);
       return Jsoup.connect(url)
           .header("user-agent",
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36")
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36")
           .get();
     } catch (IOException e) {
       e.printStackTrace();
