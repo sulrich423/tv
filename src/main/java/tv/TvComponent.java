@@ -48,7 +48,8 @@ import tv.websocket.WebSocketMessage;
 public class TvComponent {
 
   private static final ImmutableList<String> CHANNEL_BLACK_LIST = ImmutableList.of("3PLUS", "ATV", "ATV2", "ORF1", "ORF2", "ORF3",
-      "PULS4", "PULS8", "SF1", "SF2", "STTV", "BE1", "BIBEL", "ZEE-1", "EOTV", "SPORT", "DR1", "TV2", "CPLUSC");
+      "PULS4", "PULS8", "SF1", "SF2", "STTV", "BE1", "BIBEL", "ZEE-1", "EOTV", "SPORT", "DR1", "TV2", "CPLUS", "CPLUSC",
+      "CPLUSD", "C5", "EURO-S", "FRA2", "FRA3", "FRA4", "FRA5", "FRAO", "BBC1", "BBC2", "BBC4", "EURO-D", "ATV-A", "TV5");
 
   private static final ImmutableList<String> GERMANY_LANGUAGE_COUNTRIES = ImmutableList.of("D", "A", "CH", "BRD", "DDR");
 
