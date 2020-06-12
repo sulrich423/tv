@@ -243,9 +243,9 @@ public class TvComponent {
         .map(element -> element.nextElementSibling().text())
         .orElse(null);
 
-    List<String> images = doc.select(".film-gallery .swiper-slide > img").stream()
-        .map(element -> element.attr("src"))
-        .filter(src -> src.startsWith("https://a2.tvspielfilm.de/imedia/tv/"))
+    List<String> images = doc.select(".gallery .swiper-slide > picture > img").stream()
+        .map(element -> element.attr("data-src"))
+        .filter(src -> src.startsWith("https://a2.tvspielfilm.de/itv_sofa/"))
         .collect(Collectors.toList());
 
     String description = doc.select(".broadcast-detail__description").html();
