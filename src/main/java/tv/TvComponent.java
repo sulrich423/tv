@@ -202,7 +202,7 @@ public class TvComponent {
     String channel = element.select(".programm-col1 a").html();
     String time = element.select(".col-2 strong").html();
     String date = element.select(".col-2 span").html();
-    String title = element.select(".col-3 strong a").text();
+    String title = element.select(".col-3 a strong").text();
     String countryAndYear = element.select(".col-3 span").text().replace(title, "").trim();
     String country = null;
     String year = null;
@@ -368,7 +368,7 @@ public class TvComponent {
       System.out.println(url);
       return Jsoup.connect(url)
           .header("user-agent",
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36")
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36")
           .get();
     } catch (IOException e) {
       e.printStackTrace();
