@@ -53,6 +53,8 @@ public class TvComponent {
 
   private static final ImmutableList<String> GERMANY_LANGUAGE_COUNTRIES = ImmutableList.of("D", "A", "CH", "BRD", "DDR");
 
+  private static final Pattern CHANNEL_PATTERN = Pattern.compile(".*,(.*)\\.html");
+
   @Inject
   private MovieConverter movieConverter;
 
@@ -199,7 +201,12 @@ public class TvComponent {
   }
 
   private TvSpielfilmOverviewData getTvSpielfilmOverviewData(Element element) {
-    String channel = element.select(".programm-col1 a").html();
+    String channelHref = element.select(".programm-col1 a").attr("href");
+    Matcher channelMatcher = CHANNEL_PATTERN.matcher(channelHref);
+    String channel = null;
+    if (channelMatcher.matches()) {
+      channel = channelMatcher.group(1);
+    }
     String time = element.select(".col-2 strong").html();
     String date = element.select(".col-2 span").html();
     String title = element.select(".col-3 a strong").text();
