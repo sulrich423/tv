@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
@@ -304,10 +305,15 @@ public class TvComponent {
       String imdbUrl = "https://www.imdb.com/title/" + imdbId + "/";
       Document doc = jsoupGet(imdbUrl);
 
-      String imdbRating = doc.select(".ratingValue strong span").html();
       String metaCriticRating = doc.select(".metacriticScore span").html();
+      if (Strings.isNullOrEmpty(metaCriticRating)) {
+        metaCriticRating = doc.select(".score-meta").html();
+      }
 
       String awards = doc.select(".awards-blurb b").text();
+      if (Strings.isNullOrEmpty(awards)) {
+        awards = doc.select("li[data-testid=award_information] a").text();
+      }
 
       String schemaOrgString = doc.select("script[type=application/ld+json]").html();
       ImdbDetailSchemaOrg schemaOrg = getImdbDetailSchemaOrg(schemaOrgString);
@@ -315,6 +321,8 @@ public class TvComponent {
           .map(Actor::getName)
           .limit(2)
           .collect(Collectors.joining(", "));
+
+      String imdbRating = schemaOrg.getAggregateRating().getRatingValue();
 
       ImdbDetailData imdbDetailData = ImdbDetailData.builder()
           .withImdbRating(imdbRating)
@@ -350,7 +358,7 @@ public class TvComponent {
           .target(url)
           .request()
           .header("user-agent",
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36")
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36")
           .buildGet()
           .invoke(ImdbSuggestResponse.class);
       return response;
@@ -375,7 +383,7 @@ public class TvComponent {
       System.out.println(url);
       return Jsoup.connect(url)
           .header("user-agent",
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36")
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36")
           .get();
     } catch (IOException e) {
       e.printStackTrace();

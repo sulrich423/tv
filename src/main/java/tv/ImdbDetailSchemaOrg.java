@@ -10,6 +10,7 @@ public class ImdbDetailSchemaOrg {
 
   private List<Actor> actor = Lists.newArrayList();
   private String name;
+  private AggregateRating aggregateRating;
 
   public List<Actor> getActor() {
     return actor;
@@ -17,6 +18,10 @@ public class ImdbDetailSchemaOrg {
 
   public String getName() {
     return name;
+  }
+
+  public AggregateRating getAggregateRating() {
+    return aggregateRating;
   }
 
   @JsonIgnoreProperties(ignoreUnknown = true)
@@ -29,4 +34,16 @@ public class ImdbDetailSchemaOrg {
     }
 
   }
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  public static class AggregateRating {
+
+    private String ratingValue;
+
+    public String getRatingValue() {
+      return ratingValue;
+    }
+
+  }
+
 }
