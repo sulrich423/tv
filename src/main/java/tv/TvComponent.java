@@ -32,6 +32,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 import tv.ImdbDetailSchemaOrg.Actor;
+import tv.ImdbDetailSchemaOrg.AggregateRating;
 import tv.ImdbSuggestResponse.Entry;
 import tv.data.ImdbDetailData;
 import tv.data.ImdbSuggestData;
@@ -322,7 +323,9 @@ public class TvComponent {
           .limit(2)
           .collect(Collectors.joining(", "));
 
-      String imdbRating = schemaOrg.getAggregateRating().getRatingValue();
+      String imdbRating = Optional.ofNullable(schemaOrg.getAggregateRating())
+          .map(AggregateRating::getRatingValue)
+          .orElse(null);
 
       ImdbDetailData imdbDetailData = ImdbDetailData.builder()
           .withImdbRating(imdbRating)
