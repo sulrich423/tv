@@ -9,7 +9,7 @@ import com.google.common.collect.Lists;
 public class ImdbDetailSchemaOrg {
 
   private List<Person> actor = Lists.newArrayList();
-  private Person director;
+  private List<Person> director = Lists.newArrayList();
   private String name;
   private AggregateRating aggregateRating;
 
@@ -17,7 +17,7 @@ public class ImdbDetailSchemaOrg {
     return actor;
   }
 
-  public Person getDirector() {
+  public List<Person> getDirector() {
     return director;
   }
 

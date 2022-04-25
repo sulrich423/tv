@@ -1,1 +1,1 @@
-[![Build Status](https://travis-ci.com/sulrich423/tv.svg?branch=master)](https://travis-ci.com/sulrich423/tv)
+[![Docker Image](https://github.com/sulrich423/tv/actions/workflows/docker-build-publish.yml/badge.svg)](https://github.com/sulrich423/tv/actions/workflows/docker-build-publish.yml)

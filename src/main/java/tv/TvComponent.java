@@ -332,6 +332,11 @@ public class TvComponent {
 
       String schemaOrgString = doc.select("script[type=application/ld+json]").html();
       ImdbDetailSchemaOrg schemaOrg = getImdbDetailSchemaOrg(schemaOrgString);
+
+      String director = schemaOrg.getDirector().stream()
+          .map(Person::getName)
+          .collect(Collectors.joining(", "));
+
       String stars = schemaOrg.getActor().stream()
           .map(Person::getName)
           .limit(2)
@@ -345,7 +350,7 @@ public class TvComponent {
           .withImdbRating(imdbRating)
           .withMetacriticRating(metaCriticRating)
           .withAwards(awards)
-          .withDirector(Optional.ofNullable(schemaOrg.getDirector()).map(Person::getName).orElse(null))
+          .withDirector(director)
           .withStars(stars)
           .withOriginalTitle(schemaOrg.getName())
           .build();
