@@ -325,7 +325,7 @@ public class TvComponent {
       String awards = doc.select(".awards-blurb b").text();
       if (Strings.isNullOrEmpty(awards)) {
         String awardsString = doc.select("li[data-testid=award_information] a").text();
-        if (!"Awards".equals(awardsString)) {
+        if (awardsString != null && !awardsString.trim().equals("Awards")) {
           awards = awardsString;
         }
       }
