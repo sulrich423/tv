@@ -360,6 +360,7 @@ public class MovieEntity {
       return withDirector(tvSpielfilmDetailData.getDirector())
           .withOriginalTitle(tvSpielfilmDetailData.getOriginalTitle())
           .withImages(tvSpielfilmDetailData.getImages())
+          .withDescription(tvSpielfilmDetailData.getDescription())
           .withTipp(tvSpielfilmDetailData.isTipp())
           .withIsNew(tvSpielfilmDetailData.isNew());
     }

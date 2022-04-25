@@ -8,12 +8,17 @@ import com.google.common.collect.Lists;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ImdbDetailSchemaOrg {
 
-  private List<Actor> actor = Lists.newArrayList();
+  private List<Person> actor = Lists.newArrayList();
+  private Person director;
   private String name;
   private AggregateRating aggregateRating;
 
-  public List<Actor> getActor() {
+  public List<Person> getActor() {
     return actor;
+  }
+
+  public Person getDirector() {
+    return director;
   }
 
   public String getName() {
@@ -25,7 +30,7 @@ public class ImdbDetailSchemaOrg {
   }
 
   @JsonIgnoreProperties(ignoreUnknown = true)
-  public static class Actor {
+  public static class Person {
 
     private String name;
 

@@ -31,11 +31,12 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
-import tv.ImdbDetailSchemaOrg.Actor;
 import tv.ImdbDetailSchemaOrg.AggregateRating;
+import tv.ImdbDetailSchemaOrg.Person;
 import tv.ImdbSuggestResponse.Entry;
 import tv.data.ImdbDetailData;
 import tv.data.ImdbSuggestData;
+import tv.data.TvSpielfilmDetailData;
 import tv.data.TvSpielfilmOverviewData;
 import tv.db.MovieEntity;
 import tv.db.MovieRepository;
@@ -252,6 +253,11 @@ public class TvComponent {
         .map(element -> element.nextElementSibling().text())
         .orElse(null);
 
+    String originalTitle = doc.select("section.cast dt").stream()
+        .filter(element -> element.text().equals("Originaltitel:"))
+        .findFirst().map(element -> element.nextElementSibling().text())
+        .orElse(null);
+
     List<String> images = doc.select(".gallery .swiper-slide > picture > img").stream()
         .map(element -> element.attr("data-src"))
         .filter(src -> src.startsWith("https://a2.tvspielfilm.de/itv_sofa/"))
@@ -263,20 +269,25 @@ public class TvComponent {
 
     boolean isNew = !doc.select(".broadcast-detail__header .icon-new").isEmpty();
 
-    return movieEntity.but()
+    TvSpielfilmDetailData tvSpielfilmDetailData = TvSpielfilmDetailData.builder()
+        .withOriginalTitle(originalTitle)
         .withDirector(director)
         .withImages(images)
         .withDescription(description)
         .withTipp(isTipp)
         .withIsNew(isNew)
         .build();
+
+    return movieEntity.but()
+        .withTvSpielfilmDetailData(tvSpielfilmDetailData)
+        .build();
   }
 
   private MovieEntity addImdbSuggestData(MovieEntity movieEntity) {
-    String title = movieEntity.getTitle();
+    String titleForSearch = Optional.ofNullable(movieEntity.getOriginalTitle()).orElse(movieEntity.getTitle());
     String year = movieEntity.getYear();
 
-    List<Entry> entryWithoutYear = jsonGet(createImdbSuggestUrl(title)).getList().stream()
+    List<Entry> entryWithoutYear = jsonGet(createImdbSuggestUrl(titleForSearch)).getList().stream()
         .filter(e -> ImdbSuggestResponse.RELEVANT_KINDS.contains(e.getKind()))
         .collect(Collectors.toList());
 
@@ -313,13 +324,16 @@ public class TvComponent {
 
       String awards = doc.select(".awards-blurb b").text();
       if (Strings.isNullOrEmpty(awards)) {
-        awards = doc.select("li[data-testid=award_information] a").text();
+        String awardsString = doc.select("li[data-testid=award_information] a").text();
+        if (!"Awards".equals(awardsString)) {
+          awards = awardsString;
+        }
       }
 
       String schemaOrgString = doc.select("script[type=application/ld+json]").html();
       ImdbDetailSchemaOrg schemaOrg = getImdbDetailSchemaOrg(schemaOrgString);
       String stars = schemaOrg.getActor().stream()
-          .map(Actor::getName)
+          .map(Person::getName)
           .limit(2)
           .collect(Collectors.joining(", "));
 
@@ -331,6 +345,7 @@ public class TvComponent {
           .withImdbRating(imdbRating)
           .withMetacriticRating(metaCriticRating)
           .withAwards(awards)
+          .withDirector(Optional.ofNullable(schemaOrg.getDirector()).map(Person::getName).orElse(null))
           .withStars(stars)
           .withOriginalTitle(schemaOrg.getName())
           .build();
