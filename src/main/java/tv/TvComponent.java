@@ -18,6 +18,7 @@ import javax.ws.rs.client.ClientBuilder;
 
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -284,15 +285,24 @@ public class TvComponent {
   }
 
   private MovieEntity addImdbSuggestData(MovieEntity movieEntity) {
-    String titleForSearch = Optional.ofNullable(movieEntity.getOriginalTitle()).orElse(movieEntity.getTitle());
+    String titleForSearch = Optional.ofNullable(movieEntity.getOriginalTitleTvSpielfilm()).orElse(movieEntity.getTitle());
     String year = movieEntity.getYear();
+    String previousYear;
+    String nextYear;
+    if (NumberUtils.isCreatable(year)) {
+      previousYear = String.valueOf(Integer.valueOf(year) - 1);
+      nextYear = String.valueOf(Integer.valueOf(year) + 1);
+    } else {
+      previousYear = "";
+      nextYear = "";
+    }
 
     List<Entry> entryWithoutYear = jsonGet(createImdbSuggestUrl(titleForSearch)).getList().stream()
         .filter(e -> ImdbSuggestResponse.RELEVANT_KINDS.contains(e.getKind()))
         .collect(Collectors.toList());
 
     Entry entry = entryWithoutYear.stream()
-        .filter(e -> year == null || year.equals(e.getYear()))
+        .filter(e -> year == null || year.equals(e.getYear()) || previousYear.equals(e.getYear()) || nextYear.equals(e.getYear()))
         .findFirst().orElse(entryWithoutYear.stream().findFirst().orElse(null));
 
     ImdbSuggestData imdbSuggestData;
@@ -437,7 +447,14 @@ public class TvComponent {
         movieRepository.save(updatedEntity);
       }
     }
+  }
 
+  public void setNoConflict(Integer id) {
+    Optional<MovieEntity> entity = movieRepository.findById(id);
+    if (entity.isPresent()) {
+      MovieEntity updatedEntity = entity.get().but().withNoConflict(true).build();
+      movieRepository.save(updatedEntity);
+    }
   }
 
 }

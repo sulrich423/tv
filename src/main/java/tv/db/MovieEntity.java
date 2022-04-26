@@ -16,7 +16,7 @@ import tv.data.ImdbSuggestData;
 import tv.data.TvSpielfilmDetailData;
 import tv.data.TvSpielfilmOverviewData;
 
-@Entity
+@Entity(name = "movie")
 public class MovieEntity {
 
   @Id
@@ -36,8 +36,10 @@ public class MovieEntity {
   private String stars;
   private String callDate;
   private String tvSpielfilmDetailUrl;
-  private String originalTitle;
-  private String director;
+  private String originalTitleImdb;
+  private String originalTitleTvSpielfilm;
+  private String directorImdb;
+  private String directorTvSpielfilm;
   private boolean tipp;
   @ElementCollection
   @OrderColumn(name = "image_id")
@@ -47,6 +49,7 @@ public class MovieEntity {
   private boolean isNew;
   private String awards;
   private boolean recorded;
+  private boolean noConflict;
 
   private MovieEntity(Builder builder) {
     this.id = builder.id;
@@ -64,14 +67,17 @@ public class MovieEntity {
     this.stars = builder.stars;
     this.callDate = builder.callDate;
     this.tvSpielfilmDetailUrl = builder.tvSpielfilmDetailUrl;
-    this.originalTitle = builder.originalTitle;
-    this.director = builder.director;
+    this.originalTitleImdb = builder.originalTitleImdb;
+    this.originalTitleTvSpielfilm = builder.originalTitleTvSpielfilm;
+    this.directorImdb = builder.directorImdb;
+    this.directorTvSpielfilm = builder.directorTvSpielfilm;
     this.tipp = builder.tipp;
     this.images = builder.images;
     this.description = builder.description;
     this.isNew = builder.isNew;
     this.awards = builder.awards;
     this.recorded = builder.recorded;
+    this.noConflict = builder.noConflict;
   }
 
   public MovieEntity() {
@@ -96,13 +102,16 @@ public class MovieEntity {
         .withTvSpielfilmDetailUrl(tvSpielfilmDetailUrl)
         .withTvSpielfilmRating(tvSpielfilmRating)
         .withYear(year)
-        .withOriginalTitle(originalTitle)
-        .withDirector(director)
+        .withOriginalTitleImdb(originalTitleImdb)
+        .withOriginalTitleTvSpielfilm(originalTitleTvSpielfilm)
+        .withDirectorImdb(directorImdb)
+        .withDirectorTvSpielfilm(directorTvSpielfilm)
         .withImages(images)
         .withDescription(description)
         .withIsNew(isNew)
         .withAwards(awards)
-        .withRecorded(recorded);
+        .withRecorded(recorded)
+        .withNoConflict(noConflict);
   }
 
   public Integer getId() {
@@ -181,12 +190,20 @@ public class MovieEntity {
     return tvSpielfilmDetailUrl;
   }
 
-  public String getOriginalTitle() {
-    return originalTitle;
+  public String getOriginalTitleImdb() {
+    return originalTitleImdb;
   }
 
-  public String getDirector() {
-    return director;
+  public String getOriginalTitleTvSpielfilm() {
+    return originalTitleTvSpielfilm;
+  }
+
+  public String getDirectorImdb() {
+    return directorImdb;
+  }
+
+  public String getDirectorTvSpielfilm() {
+    return directorTvSpielfilm;
   }
 
   public List<String> getImages() {
@@ -195,6 +212,10 @@ public class MovieEntity {
 
   public String getDescription() {
     return description;
+  }
+
+  public boolean isNoConflict() {
+    return noConflict;
   }
 
   public static Builder builder() {
@@ -217,14 +238,17 @@ public class MovieEntity {
     private String stars;
     private String callDate;
     private String tvSpielfilmDetailUrl;
-    private String originalTitle;
-    private String director;
+    private String originalTitleImdb;
+    private String originalTitleTvSpielfilm;
+    private String directorImdb;
+    private String directorTvSpielfilm;
     private boolean tipp;
     private List<String> images = Collections.emptyList();
     private String description;
     private boolean isNew;
     private String awards;
     private boolean recorded;
+    public boolean noConflict;
 
     private Builder() {
     }
@@ -304,13 +328,23 @@ public class MovieEntity {
       return this;
     }
 
-    public Builder withOriginalTitle(String originalTitle) {
-      this.originalTitle = originalTitle;
+    public Builder withOriginalTitleImdb(String originalTitleImdb) {
+      this.originalTitleImdb = originalTitleImdb;
       return this;
     }
 
-    public Builder withDirector(String director) {
-      this.director = director;
+    public Builder withOriginalTitleTvSpielfilm(String originalTitleTvSpielfilm) {
+      this.originalTitleTvSpielfilm = originalTitleTvSpielfilm;
+      return this;
+    }
+
+    public Builder withDirectorImdb(String directorImdb) {
+      this.directorImdb = directorImdb;
+      return this;
+    }
+
+    public Builder withDirectorTvSpielfilm(String directorTvSpielfilm) {
+      this.directorTvSpielfilm = directorTvSpielfilm;
       return this;
     }
 
@@ -344,6 +378,11 @@ public class MovieEntity {
       return this;
     }
 
+    public Builder withNoConflict(boolean noConflict) {
+      this.noConflict = noConflict;
+      return this;
+    }
+
     public Builder withTvSpielfilmOverviewData(TvSpielfilmOverviewData tvSpielfilmOverviewData) {
       return withChannel(tvSpielfilmOverviewData.getChannel())
           .withCountry(tvSpielfilmOverviewData.getCountry())
@@ -357,8 +396,8 @@ public class MovieEntity {
     }
 
     public Builder withTvSpielfilmDetailData(TvSpielfilmDetailData tvSpielfilmDetailData) {
-      return withDirector(tvSpielfilmDetailData.getDirector())
-          .withOriginalTitle(tvSpielfilmDetailData.getOriginalTitle())
+      return withDirectorTvSpielfilm(tvSpielfilmDetailData.getDirector())
+          .withOriginalTitleTvSpielfilm(tvSpielfilmDetailData.getOriginalTitle())
           .withImages(tvSpielfilmDetailData.getImages())
           .withDescription(tvSpielfilmDetailData.getDescription())
           .withTipp(tvSpielfilmDetailData.isTipp())
@@ -374,7 +413,9 @@ public class MovieEntity {
           .withMetacriticRating(imdbDetailData.getMetacriticRating())
           .withAwards(imdbDetailData.getAwards())
           .withStars(imdbDetailData.getStars())
-          .withOriginalTitle(imdbDetailData.getOriginalTitle());
+          .withOriginalTitleImdb(imdbDetailData.getOriginalTitle())
+          .withDirectorImdb(imdbDetailData.getDirector())
+          .withNoConflict(false);
     }
 
     public MovieEntity build() {

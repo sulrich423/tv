@@ -109,5 +109,13 @@ $(function () {
       });
     });
 
+    $('.set-no-conflict').click(function() {
+      $.post('/setNoConflict/', {"id" : $(this).data('id')}, function(responseData) {
+        if (responseData.success) {
+          location.reload();
+        }
+      });
+    });
+
 
 });

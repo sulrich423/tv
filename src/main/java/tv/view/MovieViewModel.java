@@ -8,6 +8,7 @@ public class MovieViewModel {
   private final Integer id;
   private final String title;
   private final String originalTitle;
+  private final boolean originalTitleConflict;
   private final String country;
   private final List<String> countries;
   private final String year;
@@ -16,6 +17,7 @@ public class MovieViewModel {
   private final String metacriticRating;
   private final String metacriticClass;
   private final String director;
+  private final boolean directorConflict;
   private final List<String> images;
   private final String description;
   private final List<AiringData> airingDatas;
@@ -33,6 +35,7 @@ public class MovieViewModel {
     this.id = builder.id;
     this.title = builder.title;
     this.originalTitle = builder.originalTitle;
+    this.originalTitleConflict = builder.originalTitleConflict;
     this.country = builder.country;
     this.countries = builder.countries;
     this.year = builder.year;
@@ -41,6 +44,7 @@ public class MovieViewModel {
     this.metacriticRating = builder.metacriticRating;
     this.metacriticClass = builder.metacriticClass;
     this.director = builder.director;
+    this.directorConflict = builder.directorConflict;
     this.images = builder.images;
     this.description = builder.description;
     this.airingDatas = builder.airingDatas;
@@ -79,8 +83,16 @@ public class MovieViewModel {
     return isNew;
   }
 
+  public boolean isConflict() {
+    return isDirectorConflict() && isOriginalTitleConflict();
+  }
+
   public String getDirector() {
     return director;
+  }
+
+  public boolean isDirectorConflict() {
+    return directorConflict;
   }
 
   public String getMetacriticClass() {
@@ -101,6 +113,10 @@ public class MovieViewModel {
 
   public String getOriginalTitle() {
     return originalTitle;
+  }
+
+  public boolean isOriginalTitleConflict() {
+    return originalTitleConflict;
   }
 
   public String getCountry() {
@@ -158,6 +174,7 @@ public class MovieViewModel {
         .withCountries(countries)
         .withDescription(description)
         .withDirector(director)
+        .withDirectorConflict(directorConflict)
         .withGenre(genre)
         .withImages(images)
         .withImdbRating(imdbRating)
@@ -166,6 +183,7 @@ public class MovieViewModel {
         .withMetacriticRating(metacriticRating)
         .withMetacriticClass(metacriticClass)
         .withOriginalTitle(originalTitle)
+        .withOriginalTitleConflict(originalTitleConflict)
         .withRanking(ranking)
         .withStars(stars)
         .withTitle(title)
@@ -232,6 +250,7 @@ public class MovieViewModel {
     private Integer id;
     private String title;
     private String originalTitle;
+    private boolean originalTitleConflict;
     private String country;
     private List<String> countries = Collections.emptyList();
     private String year;
@@ -240,6 +259,7 @@ public class MovieViewModel {
     private String metacriticRating;
     private String metacriticClass;
     private String director;
+    private boolean directorConflict;
     private List<String> images = Collections.emptyList();
     private String description;
     private List<AiringData> airingDatas = Collections.emptyList();
@@ -260,6 +280,7 @@ public class MovieViewModel {
       this.id = movieViewModel.id;
       this.title = movieViewModel.title;
       this.originalTitle = movieViewModel.originalTitle;
+      this.originalTitleConflict = movieViewModel.originalTitleConflict;
       this.country = movieViewModel.country;
       this.countries = movieViewModel.countries;
       this.year = movieViewModel.year;
@@ -268,6 +289,7 @@ public class MovieViewModel {
       this.metacriticRating = movieViewModel.metacriticRating;
       this.metacriticClass = movieViewModel.metacriticClass;
       this.director = movieViewModel.director;
+      this.directorConflict = movieViewModel.directorConflict;
       this.images = movieViewModel.images;
       this.description = movieViewModel.description;
       this.airingDatas = movieViewModel.airingDatas;
@@ -294,6 +316,11 @@ public class MovieViewModel {
 
     public Builder withOriginalTitle(String originalTitle) {
       this.originalTitle = originalTitle;
+      return this;
+    }
+
+    public Builder withOriginalTitleConflict(boolean originalTitleConflict) {
+      this.originalTitleConflict = originalTitleConflict;
       return this;
     }
 
@@ -334,6 +361,11 @@ public class MovieViewModel {
 
     public Builder withDirector(String director) {
       this.director = director;
+      return this;
+    }
+
+    public Builder withDirectorConflict(boolean directorConflict) {
+      this.directorConflict = directorConflict;
       return this;
     }
 

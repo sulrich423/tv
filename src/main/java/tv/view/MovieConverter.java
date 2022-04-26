@@ -34,6 +34,10 @@ public class MovieConverter {
   public MovieViewModel toViewModel(MovieEntity entity) {
     List<AiringData> airingData = Lists.newArrayList(getAiringData(entity));
 
+    boolean isOriginalTitleConflict = isConflict(entity.isNoConflict(), entity.getOriginalTitleImdb(),
+        Optional.ofNullable(entity.getOriginalTitleTvSpielfilm()).orElse(entity.getTitle()));
+    boolean isDirectorConflict = isConflict(entity.isNoConflict(), entity.getDirectorImdb(), entity.getDirectorTvSpielfilm());
+
     return MovieViewModel.builder()
         .withId(airingData.stream().findFirst().map(AiringData::getId).orElse(null))
         .withCallDate(entity.getCallDate())
@@ -53,14 +57,29 @@ public class MovieConverter {
         .withTitle(entity.getTitle())
         .withTvSpielfilmRating(entity.getTvSpielfilmRating())
         .withYear(entity.getYear())
-        .withOriginalTitle(entity.getOriginalTitle())
-        .withDirector(entity.getDirector())
+        .withOriginalTitle(entity.getOriginalTitleImdb())
+        .withOriginalTitleConflict(isOriginalTitleConflict)
+        .withDirector(entity.getDirectorTvSpielfilm())
+        .withDirectorConflict(isDirectorConflict)
         .withImages(entity.getImages())
         .withDescription(entity.getDescription())
         .withTipp(entity.isTipp())
         .withIsNew(entity.isNew())
         .withAwards(StringUtils.removeEnd(entity.getAwards(), "."))
         .build();
+  }
+
+  private boolean isConflict(boolean noConflict, String imdbData, String tvSpielfilmData) {
+    if (noConflict || Strings.isNullOrEmpty(imdbData) || Strings.isNullOrEmpty(tvSpielfilmData)) {
+      return false;
+    }
+    String cleanedImdbData = cleanStringForConflictedCompare(imdbData);
+    String cleanedTvSpielfilmData = cleanStringForConflictedCompare(tvSpielfilmData);
+    return !cleanedImdbData.equals(cleanedTvSpielfilmData);
+  }
+
+  private String cleanStringForConflictedCompare(String string) {
+    return string.replaceAll("\\(.*?\\)", "").replaceAll("&.*?;", "").replaceAll("[^a-zA-Z0-9]", "").trim().toLowerCase();
   }
 
   public AiringData getAiringData(MovieEntity entity) {

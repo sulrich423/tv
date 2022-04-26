@@ -4,7 +4,7 @@
 <c:forEach items="${category.movies}" var="movie" varStatus="rowStatus">
   <div class="flip-card col-12 col-sm-6 col-md-4 col-lg-3 box bg-white rounded">
     <div class="flip-card-inner">
-      <div class="flip-card-front mybox shadow" >
+      <div class="flip-card-front mybox shadow <c:if test="${movie.conflict}">conflict</c:if>">
         <div>
           <h3>
             <c:if test="${not empty movie.imdbUrl}">
@@ -18,7 +18,7 @@
               </a>
             </c:if>
           </h3>
-          <div class="mb-4">
+          <div class="mb-4 <c:if test="${movie.originalTitleConflict}">conflict-element</c:if>">
             ${movie.originalTitle}
           </div>
         </div>
@@ -64,6 +64,9 @@
               ${movie.awards}
             </b>
           </div>
+          <c:if test="${movie.conflict}">
+            <button data-id="${movie.id}" class="set-no-conflict no-conflict btn btn-outline-success" type="button">Checked</button>
+          </c:if>
         </div>
           <div class="mt-4">
             <span>${movie.genre}</span>
@@ -74,7 +77,7 @@
                 Darsteller: ${movie.stars}
               </div>
             </c:if>
-            <div>
+            <div <c:if test="${movie.directorConflict}">class="conflict-element"</c:if>>
               Regie: ${movie.director}
             </div>
           </div>

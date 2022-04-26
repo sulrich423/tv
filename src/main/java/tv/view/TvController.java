@@ -69,4 +69,12 @@ public class TvController {
     return new SuccessResult(true);
   }
 
+  @PostMapping("/setNoConflict/")
+  @ResponseBody
+  public SuccessResult setNoConflict(@RequestParam Integer id) {
+    tvComponent.setNoConflict(id);
+
+    return new SuccessResult(true);
+  }
+
 }

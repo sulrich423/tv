@@ -745,6 +745,24 @@ a, a:hover {
   padding: 1rem 1rem 2rem 1rem;
 }
 
+.flip-card-front.conflict {
+  background: repeating-linear-gradient(
+    315deg,
+    red 0px,
+    red 5px,
+    white 10px,
+    white 40px
+  );
+}
+
+.conflict-element {
+  color: red;
+}
+
+.no-conflict {
+  background-color: white;
+}
+
 .flip-card-back {
   transform: rotateY(180deg);
   height: 100%;
