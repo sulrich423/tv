@@ -2,15 +2,18 @@ version: '3'
 services:
   mysql:
     container_name: mysql
-    image: "hypriot/rpi-mysql:latest"
+    image: "mysql/mysql-server:8.0.29"
     ports:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: tv
+      MYSQL_PASSWORD: tv
       MYSQL_DATABASE: tv
-      MYSQL_ROOT_HOST: 127.0.0.1
   tv:
     container_name: tv
-    image: "sulrich423/tv:arm32"
+    image: "sulrich423/tv:latest"
     ports:
       - "8080:8080"
+    depends_on: 
+     - mysql
