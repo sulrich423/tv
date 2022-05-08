@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -99,7 +100,7 @@ public class TvComponent {
                 .map(a -> Integer.parseInt(a.getTime().substring(0, 2)))
                 .anyMatch(a -> a >= 5 && a < 20)));
 
-    return ImmutableList.<CategoryViewModel>builder()
+    return ImmutableList.<CategoryViewModel> builder()
         .add(CategoryViewModel.builder()
             .withCategoryName("Nach 20 Uhr")
             .withMovies(beforeOrAfter8.get(false))
@@ -127,7 +128,7 @@ public class TvComponent {
           .findFirst();
 
       if (duplicateValue.isPresent()) {
-        MovieViewModel combinedValue = Lists.<MovieViewModel>newArrayList(duplicateValue.get(), movieViewModel).stream()
+        MovieViewModel combinedValue = Lists.<MovieViewModel> newArrayList(duplicateValue.get(), movieViewModel).stream()
             .sorted(Comparator.comparing(a -> a.getAiringDatas().get(0).getStart()))
             .findFirst().get()
             .but()
@@ -286,24 +287,30 @@ public class TvComponent {
 
   private MovieEntity addImdbSuggestData(MovieEntity movieEntity) {
     String titleForSearch = Optional.ofNullable(movieEntity.getOriginalTitleTvSpielfilm()).orElse(movieEntity.getTitle());
-    String year = movieEntity.getYear();
-    String previousYear;
-    String nextYear;
-    if (NumberUtils.isCreatable(year)) {
-      previousYear = String.valueOf(Integer.valueOf(year) - 1);
-      nextYear = String.valueOf(Integer.valueOf(year) + 1);
-    } else {
-      previousYear = "";
-      nextYear = "";
-    }
+    Integer year = Optional.ofNullable(movieEntity.getYear())
+        .filter(NumberUtils::isCreatable)
+        .map(Integer::valueOf)
+        .orElse(null);
 
-    List<Entry> entryWithoutYear = jsonGet(createImdbSuggestUrl(titleForSearch)).getList().stream()
+    List<Entry> entriesWithAllYears = jsonGet(createImdbSuggestUrl(titleForSearch)).getList().stream()
         .filter(e -> ImdbSuggestResponse.RELEVANT_KINDS.contains(e.getKind()))
         .collect(Collectors.toList());
 
-    Entry entry = entryWithoutYear.stream()
-        .filter(e -> year == null || year.equals(e.getYear()) || previousYear.equals(e.getYear()) || nextYear.equals(e.getYear()))
-        .findFirst().orElse(entryWithoutYear.stream().findFirst().orElse(null));
+    Optional<Entry> entryWithExactYear = entriesWithAllYears.stream()
+        .filter(e -> year == null || year.equals(e.getYear()))
+        .findFirst();
+
+    Supplier<Optional<Entry>> entryWithApproxYear = () -> entriesWithAllYears.stream()
+        .filter(e -> Integer.valueOf(year + 1).equals(e.getYear())
+            || Integer.valueOf(year - 1).equals(e.getYear()))
+        .findFirst();
+
+    Supplier<Optional<Entry>> entryWithAnyYear = () -> entriesWithAllYears.stream().findFirst();
+
+    Entry entry = entryWithExactYear
+        .or(entryWithApproxYear)
+        .or(entryWithAnyYear)
+        .orElse(null);
 
     ImdbSuggestData imdbSuggestData;
     if (entry != null) {

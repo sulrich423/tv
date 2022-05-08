@@ -28,7 +28,7 @@ public class ImdbSuggestResponse {
     private String stars;
 
     @JsonProperty("y")
-    private String year;
+    private Integer year;
 
     @JsonProperty("q")
     private String kind;
@@ -41,7 +41,7 @@ public class ImdbSuggestResponse {
       return stars;
     }
 
-    public String getYear() {
+    public Integer getYear() {
       return year;
     }
 
