@@ -259,6 +259,7 @@ public class TvComponent {
     String originalTitle = doc.select("section.cast dt").stream()
         .filter(element -> element.text().equals("Originaltitel:"))
         .findFirst().map(element -> element.nextElementSibling().text())
+        .map(otitle -> otitle.substring(0, Math.min(otitle.length(), 100)))
         .orElse(null);
 
     List<String> images = doc.select(".gallery .swiper-slide > picture > img").stream()
