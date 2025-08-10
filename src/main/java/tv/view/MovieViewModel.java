@@ -30,6 +30,7 @@ public class MovieViewModel {
   private final boolean tipp;
   private final boolean isNew;
   private final String awards;
+  private final boolean success;
 
   private MovieViewModel(Builder builder) {
     this.id = builder.id;
@@ -57,6 +58,7 @@ public class MovieViewModel {
     this.tipp = builder.tipp;
     this.isNew = builder.isNew;
     this.awards = builder.awards;
+    this.success = builder.success;
   }
 
   public Integer getId() {
@@ -163,6 +165,10 @@ public class MovieViewModel {
     return genre;
   }
 
+  public boolean isSuccess() {
+    return success;
+  }
+
   public Builder but() {
     return builder()
         .withId(id)
@@ -189,7 +195,8 @@ public class MovieViewModel {
         .withTitle(title)
         .withTvSpielfilmRating(tvSpielfilmRating)
         .withYear(year)
-        .withIsNew(isNew);
+        .withIsNew(isNew)
+        .withSuccess(success);
   }
 
   @Override
@@ -272,6 +279,7 @@ public class MovieViewModel {
     private boolean tipp;
     private boolean isNew;
     private String awards;
+    private boolean success;
 
     private Builder() {
     }
@@ -302,6 +310,7 @@ public class MovieViewModel {
       this.tipp = movieViewModel.tipp;
       this.isNew = movieViewModel.isNew;
       this.awards = movieViewModel.awards;
+      this.success = movieViewModel.success;
     }
 
     public Builder withId(Integer id) {
@@ -426,6 +435,11 @@ public class MovieViewModel {
 
     public Builder withAwards(String awards) {
       this.awards = awards;
+      return this;
+    }
+
+    public Builder withSuccess(boolean success) {
+      this.success = success;
       return this;
     }
 

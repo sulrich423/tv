@@ -50,6 +50,7 @@ public class MovieEntity {
   private String awards;
   private boolean recorded;
   private boolean noConflict;
+  private boolean success;
 
   private MovieEntity(Builder builder) {
     this.id = builder.id;
@@ -78,6 +79,7 @@ public class MovieEntity {
     this.awards = builder.awards;
     this.recorded = builder.recorded;
     this.noConflict = builder.noConflict;
+    this.success = builder.success;
   }
 
   public MovieEntity() {
@@ -111,7 +113,8 @@ public class MovieEntity {
         .withIsNew(isNew)
         .withAwards(awards)
         .withRecorded(recorded)
-        .withNoConflict(noConflict);
+        .withNoConflict(noConflict)
+        .withSuccess(success);
   }
 
   public Integer getId() {
@@ -218,6 +221,10 @@ public class MovieEntity {
     return noConflict;
   }
 
+  public boolean isSuccess() {
+    return success;
+  }
+
   public static Builder builder() {
     return new Builder();
   }
@@ -248,7 +255,8 @@ public class MovieEntity {
     private boolean isNew;
     private String awards;
     private boolean recorded;
-    public boolean noConflict;
+    private boolean noConflict;
+    private boolean success = true;
 
     private Builder() {
     }
@@ -380,6 +388,11 @@ public class MovieEntity {
 
     public Builder withNoConflict(boolean noConflict) {
       this.noConflict = noConflict;
+      return this;
+    }
+
+    public Builder withSuccess(boolean success) {
+      this.success = success;
       return this;
     }
 

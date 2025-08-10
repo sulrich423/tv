@@ -10,4 +10,6 @@ public interface MovieRepository extends CrudRepository<MovieEntity, Integer> {
 
   List<MovieEntity> findByCallDate(String callDate);
 
+  List<MovieEntity> findByCallDateAndSuccess(String callDate, boolean success);
+
 }

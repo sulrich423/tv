@@ -2,7 +2,7 @@ var stompClient = null;
 
 var progress = 0;
 
-function connect() {
+function connect(url) {
     var socket = new SockJS('/ws');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
@@ -10,7 +10,7 @@ function connect() {
         stompClient.subscribe('/topic/movies', function (greeting) {
             showGreeting(JSON.parse(greeting.body).value);
         });
-        sendData();
+        sendData(url);
     });
 }
 
@@ -21,8 +21,8 @@ function disconnect() {
     console.log("Disconnected");
 }
 
-function sendData() {
-    stompClient.send("/app/update", {}, JSON.stringify({'date': $('.page-item:nth-child(2)').data('date')}));
+function sendData(url) {
+    stompClient.send("/app/" + url, {}, JSON.stringify({'date': $('.page-item:nth-child(2)').data('date')}));
 }
 
 function showGreeting(message) {
@@ -69,7 +69,13 @@ $(function () {
     $( ".update" ).click(function() {
       $('.overlay').show();
       $('.circular-chart').show();
-      connect();
+      connect("update");
+    });
+
+    $( ".retry-errors" ).click(function() {
+      $('.overlay').show();
+      $('.circular-chart').show();
+      connect("retryErrors");
     });
 
     $('.record, .recorded').click(function() {

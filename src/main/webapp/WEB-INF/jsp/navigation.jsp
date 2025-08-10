@@ -16,5 +16,9 @@
       </c:if>
     </c:forEach>
   </div>
+  <c:if test="${errors > 0}">
+    <div>Errors: ${errors}</div>
+    <button class="retry-errors btn btn-secondary ml-auto" style="margin-right: 10px;">Retry errors</button>
+  </c:if>
   <button class="update btn btn-secondary ml-auto" style="margin-right: 10px;">Update</button>
 </nav>

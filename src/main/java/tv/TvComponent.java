@@ -84,7 +84,7 @@ public class TvComponent {
         .collect(Collectors.toList());
 
     Map<Boolean, List<MovieViewModel>> germanAndNotGermanMovies = sortedMovies.stream()
-        .collect(Collectors.groupingBy(
+        .collect(Collectors.partitioningBy(
             movie -> movie.getCountries().stream().allMatch(country -> GERMANY_LANGUAGE_COUNTRIES.contains(country))));
 
     List<MovieViewModel> notGermanMovies = ListUtils.emptyIfNull(germanAndNotGermanMovies.get(false));
@@ -101,7 +101,7 @@ public class TvComponent {
                 .map(a -> Integer.parseInt(a.getTime().substring(0, 2)))
                 .anyMatch(a -> a >= 5 && a < 20)));
 
-    return ImmutableList.<CategoryViewModel> builder()
+    return ImmutableList.<CategoryViewModel>builder()
         .add(CategoryViewModel.builder()
             .withCategoryName("Nach 20 Uhr")
             .withMovies(beforeOrAfter8.get(false))
@@ -129,7 +129,7 @@ public class TvComponent {
           .findFirst();
 
       if (duplicateValue.isPresent()) {
-        MovieViewModel combinedValue = Lists.<MovieViewModel> newArrayList(duplicateValue.get(), movieViewModel).stream()
+        MovieViewModel combinedValue = Lists.<MovieViewModel>newArrayList(duplicateValue.get(), movieViewModel).stream()
             .sorted(Comparator.comparing(a -> a.getAiringDatas().get(0).getStart()))
             .findFirst().get()
             .but()
@@ -177,7 +177,23 @@ public class TvComponent {
         .collect(Collectors.toList())
         .stream()
         .forEach(entity -> movieRepository.save(entity));
+  }
 
+  @Transactional
+  public void retryErrors(String date) {
+    List<MovieEntity> rawData = movieRepository.findByCallDateAndSuccess(date, false);
+
+    int totalSize = rawData.size();
+
+    rawData.parallelStream()
+        .map(this::addTvSpielfilmDetailData)
+        .map(this::addImdbSuggestData)
+        .map(this::addImdbDetailData)
+        .map(entity -> entity.but().withCallDate(date).build())
+        .peek(entity -> messagingTemplate.convertAndSend("/topic/movies", new WebSocketMessage(String.valueOf(totalSize))))
+        .collect(Collectors.toList())
+        .stream()
+        .forEach(entity -> movieRepository.save(entity));
   }
 
   private boolean filterMovies(TvSpielfilmOverviewData tvSpielfilmOverviewData) {
@@ -198,8 +214,8 @@ public class TvComponent {
   private Document getTvSpielfilmDoc(int page, String date) {
     System.out.println("tvspielfilm seite " + page);
 
-    return jsoupGet("https://www.tvspielfilm.de/tv-programm/spielfilme/?page=" + page
-        + "&order=time&date=" + date + "&freetv=1&cat%5B%5D=SP&time=day&channel=");
+    return jsoupGet("https://www.tvspielfilm.de/tv-programm/spielfilme/?filter=1&page=" + page
+        + "&order=channel&date=" + date + "&freetv=1&cat%5B%5D=SP&time=day&channel=");
   }
 
   private Stream<Element> getElements(Document doc) {
@@ -262,16 +278,17 @@ public class TvComponent {
         .map(otitle -> otitle.substring(0, Math.min(otitle.length(), 100)))
         .orElse(null);
 
-    List<String> images = doc.select(".gallery .swiper-slide > picture > img").stream()
-        .map(element -> element.attr("data-src"))
-        .filter(src -> src.startsWith("https://a2.tvspielfilm.de/itv_sofa/"))
+    List<String> images = doc.select(".film-gallery .swiper-slide > picture > img").stream()
+        .map(element -> element.attr("src"))
         .collect(Collectors.toList());
 
     String description = doc.select(".broadcast-detail__description").html();
 
-    boolean isTipp = !doc.select(".broadcast-detail__header .icon-tip").isEmpty();
+    boolean isTipp = doc.select(".broadcast-detail__header .icon-tip").stream()
+        .anyMatch(element -> "TIPP".equals(element.text()));
 
-    boolean isNew = !doc.select(".broadcast-detail__header .icon-new").isEmpty();
+    boolean isNew = doc.select(".broadcast-detail__header .icon-tip").stream()
+        .anyMatch(element -> "NEU".equals(element.text()));
 
     TvSpielfilmDetailData tvSpielfilmDetailData = TvSpielfilmDetailData.builder()
         .withOriginalTitle(originalTitle)
@@ -336,7 +353,10 @@ public class TvComponent {
       String imdbUrl = "https://www.imdb.com/title/" + imdbId + "/";
       Document doc = jsoupGet(imdbUrl);
 
-      String metaCriticRating = doc.select(".metacriticScore span").html();
+      if (doc == null) {
+        return movieEntity.but().withSuccess(false).build();
+      }
+      String metaCriticRating = doc.select(".metacritic-score-box").html();
       if (Strings.isNullOrEmpty(metaCriticRating)) {
         metaCriticRating = doc.select(".score-meta").html();
       }
@@ -375,6 +395,7 @@ public class TvComponent {
           .build();
       return movieEntity.but()
           .withImdbDetailData(imdbDetailData)
+          .withSuccess(true)
           .build();
     } else {
       return movieEntity;
@@ -400,7 +421,7 @@ public class TvComponent {
           .target(url)
           .request()
           .header("user-agent",
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36")
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36")
           .buildGet()
           .invoke(ImdbSuggestResponse.class);
       return response;
@@ -424,8 +445,9 @@ public class TvComponent {
     try {
       System.out.println(url);
       return Jsoup.connect(url)
+          .timeout(20000)
           .header("user-agent",
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36")
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36")
           .get();
     } catch (IOException e) {
       e.printStackTrace();

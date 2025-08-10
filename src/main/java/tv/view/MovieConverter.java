@@ -25,7 +25,7 @@ public class MovieConverter {
   private static final ImmutableMap<String, Integer> TV_SPIELFILM_RANK_MAP = ImmutableMap.of("1", 60, "2", 40, "3", 20);
 
   private static final ImmutableMap<Range<Integer>, RatingClass> METACRITIC_CLASS_MAPPING = ImmutableMap
-      .<Range<Integer>, RatingClass>builder()
+      .<Range<Integer>, RatingClass> builder()
       .put(Range.lessThan(40), RatingClass.BAD)
       .put(Range.closedOpen(40, 60), RatingClass.MEDIUM)
       .put(Range.atLeast(60), RatingClass.GOOD)
@@ -66,6 +66,7 @@ public class MovieConverter {
         .withTipp(entity.isTipp())
         .withIsNew(entity.isNew())
         .withAwards(StringUtils.removeEnd(entity.getAwards(), "."))
+        .withSuccess(entity.isSuccess())
         .build();
   }
 
@@ -122,9 +123,8 @@ public class MovieConverter {
     int imdbRank = (int) (Double.parseDouble(Optional.ofNullable(Strings.emptyToNull(imdbRating)).orElse("6.0")) * 10);
     int metaCriticRank = Integer.parseInt(Optional.ofNullable(Strings.emptyToNull(metaCriticRating)).orElse("60"));
     int tvSpielfilmRank = TV_SPIELFILM_RANK_MAP.getOrDefault(tvSpielfilmRating, 60);
-    int tippBonus = tipp ? 20 : 0;
 
-    return imdbRank + metaCriticRank + tvSpielfilmRank + tippBonus;
+    return imdbRank + metaCriticRank + tvSpielfilmRank;
   }
 
   private RatingClass getMetaCriticClass(String rating) {

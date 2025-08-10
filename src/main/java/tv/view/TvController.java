@@ -36,6 +36,12 @@ public class TvController {
 
     Map<String, Object> modelMap = new HashMap<>();
 
+    int errors = sortedMovies.stream()
+        .flatMap(categoryViewModel -> categoryViewModel.getMovies().stream())
+        .mapToInt(movie -> movie.isSuccess() ? 0 : 1)
+        .sum();
+
+    modelMap.put("errors", errors);
     modelMap.put("categories", sortedMovies);
     modelMap.put("today", today.format(DateTimeFormatter.ISO_DATE));
     modelMap.put("todayFormatted", today.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
@@ -49,6 +55,15 @@ public class TvController {
   public WebSocketMessage update(DateMessage dateMessage) {
     String date = dateMessage.getDate();
     tvComponent.update(date);
+
+    return new WebSocketMessage("done");
+  }
+
+  @MessageMapping("/retryErrors")
+  @SendTo("/topic/movies")
+  public WebSocketMessage retryErrors(DateMessage dateMessage) {
+    String date = dateMessage.getDate();
+    tvComponent.retryErrors(date);
 
     return new WebSocketMessage("done");
   }

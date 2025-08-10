@@ -30,7 +30,7 @@ public class OpenWebifService {
       .put("RTL", "RTL Television")
       .put("SAT1", "SAT.1")
       .put("PRO7", "ProSieben")
-      .put("RTL2", "RTLZWEI ")
+      .put("RTL2", "RTLZWEI")
       .put("VOX", "VOX")
       .put("K1", "kabel eins")
       .put("ARTE", "arte HD")
